@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cam_dvr_user,access_cam_dvr,model_dvr_dvr,group_dvr_user,1,1,1,0
+access_cam_dvr_manager,access_cam_dvr,model_dvr_dvr,group_dvr_manager,1,1,1,1
+access_cam_dvr_list_user,access_cam_dvr_list_user_user,model_dvr_list_user,group_dvr_user,1,0,0,0
+access_cam_dvr_list_manager,access_cam_dvr_list_user_manager,model_dvr_list_user,group_dvr_manager,1,1,1,1
+access_cam_dvr_ezviz_user,access_cam_dvr_ezviz_user,model_dvr_ezviz,group_dvr_user,1,0,0,0
+access_cam_dvr_ezviz_manager,access_cam_dvr_ezviz_manager,model_dvr_ezviz,group_dvr_manager,1,1,1,1

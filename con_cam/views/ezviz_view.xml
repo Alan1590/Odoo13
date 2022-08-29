@@ -1,0 +1,29 @@
+ <odoo>
+    <record id="dvr_ezviz_view_tree" model="ir.ui.view">
+    <field name="name">dvr.ezviz.tree</field>
+    <field name="model">dvr.ezviz</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add All Fields You Want In The List Here -->
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="dvr_ezviz_view_form" model="ir.ui.view">
+        <field name="name">dvr.ezviz.form</field>
+        <field name="model">dvr.ezviz</field>
+        <field name="arch" type="xml">
+                <form string="">
+				<group>
+                    <field name="name" colspan="12"/>
+                    <field name="email_ezviz" colspan="12"/>
+                    <field name="pass_ezviz" colspan="12"/>
+                </group>
+				</form>
+        </field>
+
+    </record>
+
+
+ </odoo> 

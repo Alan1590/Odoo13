@@ -1,0 +1,72 @@
+ <odoo>
+        <act_window id="action_dvr_dvr_menu"  
+        name="Dvr"  
+        res_model="dvr.dvr"
+        view_mode="tree,form"  />  
+
+    <menuitem id="menu_item_integration" name="Integration" sequence="1" groups="base.group_user"/>
+
+    <menuitem id="menu_item_dvr_dvr" name="Dvr" parent="menu_item_integration"
+                  action="action_dvr_dvr_menu" sequence="2" groups="base.group_user"/>
+
+    <record id="dvr_dvr_view_form" model="ir.ui.view">
+        <field name="name">dvr.dvr.form</field>
+        <field name="model">dvr.dvr</field>
+        <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button type="object" name="post_message" string="Desbloquear" attrs="{'invisible': [ ('state', 'in', ['unbloqued'])]}" />
+                        <field name="state" widget="statusbar" statusbar_visible='bloqued,unbloqued'/>
+                    </header>
+                    <sheet>
+                    <group>
+                    <field name="name" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')]}" />
+                    <field name="contract_id" colspan="12"/>
+                    <field name="product_id" colspan="12"/>
+                    <field name="firmware_version" colspan="12"/>
+                    <field name="unlocked_pass" colspan="12" groups="con_cam.group_dvr_manager"/>
+                    </group>
+                            <notebook attrs="{'invisible': [ ('state', '=', 'bloqued')]}" >
+                                <page string="Dvr">
+                                    <group>
+                                        <field name="ipv4_number" string="IpV4"/>
+                                        <field name="port_number" string="Port number"/>
+                                    </group>
+                                    <field name="list_user" string="List user">
+                                        <tree>
+                                        <field name="name_user_dvr"/>
+                                        <field name="pass_user_dvr"/>                                        
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="Hikconect">
+                                    <field name="ezviz_data" string="Hikconect data">
+                                        <tree>
+                                        <field name="name"/>
+                                        <field name="email_ezviz"/>                                        
+                                        </tree>
+                                    </field>
+                                </page>
+                            </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form> 
+        </field>
+    </record>
+
+    <record id="dvr_dvr_view_tree" model="ir.ui.view">
+    <field name="name">dvr.dvr.tree</field>
+    <field name="model">dvr.dvr</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add All Fields You Want In The List Here -->
+                <field name="contract_id"/>
+                <field name="firmware_version"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

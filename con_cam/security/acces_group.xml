@@ -1,0 +1,22 @@
+ <odoo>
+ 	<!-- Create category for dvr security  !-->
+ 	<record model="ir.module.category" id="dvr_security">
+	  <field name="name">Dvr acces</field>
+	  <field name="description">Administrate security level</field>
+	  <field name="sequence">3</field>
+	</record>
+
+ 	<!-- Group manager, inherit from base group  !-->
+   <record id="group_dvr_user" model="res.groups">
+     <field name="name">User</field>
+     <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+     <field name="users" eval="[(4, ref('base.user_root'))]"/>
+     <field name="category_id" ref="dvr_security"/>
+    </record>
+ 	<!-- Group manager, inherit from group_dvr_user  !-->
+    <record id="group_dvr_manager" model="res.groups">
+      <field name="name">Manager</field>
+      <field name="implied_ids" eval="[(4, ref('group_dvr_user'))]"/>
+      <field name="category_id" ref="dvr_security"/>
+    </record>
+</odoo>
