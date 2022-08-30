@@ -20,7 +20,8 @@
                     </header>
                     <sheet>
                     <group>
-                    <field name="name" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')]}" />
+                    <field name="write_date" invisible="1"/>                        
+                    <field name="name" string="Clave desbloqueo" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')], 'invisible': [('write_date', '=', False)]}" />
                     <field name="contract_id" colspan="12"/>
                     <field name="product_id" colspan="12"/>
                     <field name="firmware_version" colspan="12"/>

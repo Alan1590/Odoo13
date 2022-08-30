@@ -7,12 +7,12 @@ import random, string
 
 import logging
 _logger = logging.getLogger(__name__)
-from hikvisionapi import Client
+#from hikvisionapi import Client
 
 class Dvr(models.Model):
     _name = "dvr.dvr"
     _inherit = 'mail.thread'
-    name = fields.Char("Name", size=256)
+    name = fields.Char("Clave desbloqueo", size=256)
     partner_id = fields.Many2one("res.partner","Cliente")
     firmware_version = fields.Char("Firmware version", size=128)
     ipv4_number = fields.Char("IpV4", size=512)
@@ -21,17 +21,30 @@ class Dvr(models.Model):
     list_user = fields.Many2many("dvr.list.user")
     contract_id = fields.Many2one("contract.contract","Contract")
     product_id = fields.Many2one("product.product","Product")
-    unlocked_pass = fields.Char("Unblock pass", size=12)
+    unlocked_pass = fields.Char("Unblock pass", size=12, readonly=True)
 
     state = fields.Selection ([
             ('bloqued','Bloqueado'),
             ('unbloqued','Desbloqueado'),
-            ],default='bloqued')
+            ],default='unbloqued')
 
-    def get_version(self):
-        cam = Client('http://192.168.0.2', 'admin', 'admin')
-        response = cam.System.deviceInfo(method='get')
-        raise Warning(response)
+#    def get_version(self):
+#        cam = Client('http://192.168.0.2', 'admin', 'admin')
+#        response = cam.System.deviceInfo(method='get')
+#        raise Warning(response)
+
+    
+    @api.model
+    def create(self, vals):
+        vals['state'] = 'bloqued'
+        rec = super(Dvr, self).create(vals)
+
+        return rec
+
+    def write(self, vals): 
+        res = super(Dvr, self).write(vals)
+
+        return res
 
     def post_message(self):
         if self.name == self.unlocked_pass:
