@@ -17,10 +17,10 @@ class Dvr(models.Model):
     firmware_version = fields.Char("Firmware version", size=128)
     ipv4_number = fields.Char("IpV4", size=512)
     port_number = fields.Char("Port")
-    ezviz_data = fields.Many2many("dvr.ezviz")
-    list_user = fields.Many2many("dvr.list.user")
+    ezviz_data = fields.Many2many("dvr.ezviz",track_visibility='onchange')
+    list_user = fields.Many2many("dvr.list.user",track_visibility='onchange')
     contract_id = fields.Many2one("contract.contract","Contract")
-    product_id = fields.Many2one("product.product","Product")
+    product_id = fields.Many2one("product.product","Product",track_visibility='onchange')
     unlocked_pass = fields.Char("Unblock pass", size=12, readonly=True)
 
     state = fields.Selection ([
@@ -36,14 +36,17 @@ class Dvr(models.Model):
     
     @api.model
     def create(self, vals):
+        if self.unlocked_pass == False:
+            unlocked_pass = self.generate_pass()
+            vals['unlocked_pass'] = unlocked_pass
+        else:
+            vals['unlocked_pass'] = self.unlocked_pass            
         vals['state'] = 'bloqued'
         rec = super(Dvr, self).create(vals)
-
         return rec
 
     def write(self, vals): 
         res = super(Dvr, self).write(vals)
-
         return res
 
     def post_message(self):
@@ -65,7 +68,7 @@ class Dvr(models.Model):
     def generate_pass(self):
         letters = string.printable
         result_str = ''.join(random.choice(letters) for i in range(10))
-        return result_str
+        return result_str.strip().replace(" ","")
 
     def _get_list_bloqued(self):
         domain = self.search([
