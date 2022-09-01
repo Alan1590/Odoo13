@@ -25,6 +25,7 @@
 #        'views/cam_live_view.xml',
         'schendule_bloqued.xml',
         'views/cam_dvr_view.xml',
+        'views/cam_dvr_user_view.xml',
         'views/ezviz_view.xml',
     ],
 }
