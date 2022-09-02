@@ -59,14 +59,20 @@ class Dvr(models.Model):
 
     def automated_bloqued(self):
         list_to_bloqued = self._get_list_bloqued()
+        self._block_devices(list_to_bloqued)
+        list_alarm_bloqued = self._get_list_bloqued_alarm()
+        self._block_devices(list_alarm_bloqued)
+
+
+    def _block_devices(self,list_to_bloqued):
         unlocked_pass = self.generate_pass()
         for item in list_to_bloqued:
             item.name = ''
             item.state = 'bloqued'
-            item.unlocked_pass = unlocked_pass
+            item.unlocked_pass = unlocked_pass        
 
     def generate_pass(self):
-        letters = string.printable
+        letters = string.hexdigits
         result_str = ''.join(random.choice(letters) for i in range(10))
         return result_str.strip().replace(" ","")
 
@@ -74,6 +80,10 @@ class Dvr(models.Model):
         domain = self.search([
         ('state', 'in', ['unbloqued']),
         ])
+        return domain
+
+    def _get_list_bloqued_alarm(self):
+        domain = self.env['alarm.central'].search([('state','in',['unbloqued'])])
         return domain
 
 class DvrUsers(models.Model): 
