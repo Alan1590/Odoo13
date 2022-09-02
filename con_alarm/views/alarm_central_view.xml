@@ -1,0 +1,61 @@
+ <odoo>
+        <act_window id="action_alarm_central_menu"  
+        name="Alarmas"  
+        res_model="alarm.central"
+        view_mode="tree,form"  />  
+
+    <menuitem id="menu_item_alarm_central" name="Alarmas" parent="con_cam.menu_item_integration"
+                  action="action_alarm_central_menu" sequence="3" groups="base.group_user"/>
+
+    <record id="dvr_dvr_view_form" model="ir.ui.view">
+        <field name="name">alarm.central.form</field>
+        <field name="model">alarm.central</field>
+        <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button type="object" name="post_message" string="Desbloquear" attrs="{'invisible': [ ('state', 'in', ['unbloqued'])]}" />
+                        <field name="state" widget="statusbar" statusbar_visible='bloqued,unbloqued'/>
+                    </header>
+                    <sheet>
+                    <group>
+                    <field name="write_date" invisible="1"/>                        
+                    <field name="name" string="Clave desbloqueo" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')], 'invisible': [('write_date', '=', False)]}" />
+                    <field name="contract_id" colspan="12"/>
+                    <field name="installer_code" colspan="12"/>
+                    <field name="serial_central" colspan="12"/>
+                    <field name="firmware_version" colspan="12"/>                    
+                    <field name="unlocked_pass" colspan="12" groups="con_cam.group_dvr_manager"/>
+                    </group>
+                            <notebook attrs="{'invisible': [ ('state', '=', 'bloqued')]}" >
+                                <page string="Comunicadores">
+                                    <field name="comunicator_ids" string="List user">
+                                        <tree>
+                                            <field name="com_model"/>
+                                            <field name="com_serial"/>                            
+                                            <field name="com_password"/>            
+                                        </tree>
+                                    </field>|
+                                </page>
+                            </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form> 
+        </field>
+    </record>
+
+    <record id="dvr_dvr_view_tree" model="ir.ui.view">
+    <field name="name">alarm.central.tree</field>
+    <field name="model">alarm.central</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add All Fields You Want In The List Here -->
+                <field name="contract_id"/>
+                <field name="serial_central"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>
