@@ -32,6 +32,12 @@ class AlarmCentral(models.Model):
 #        response = cam.System.deviceInfo(method='get')
 #        raise Warning(response)
 
+    @api.onchange('contract_id')
+    def _onchange_contract(self):
+        if self.contract_id:
+            partner_id = self.contract_id.partner_id
+            self.partner_id = partner_id
+
     
     @api.model
     def create(self, vals):

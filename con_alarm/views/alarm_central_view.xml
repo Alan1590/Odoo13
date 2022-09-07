@@ -21,6 +21,7 @@
                     <field name="write_date" invisible="1"/>                        
                     <field name="name" string="Clave desbloqueo" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')], 'invisible': [('write_date', '=', False)]}" />
                     <field name="contract_id" colspan="12"/>
+                    <field name="partner_id" colspan="12"/>
                     <field name="serial_central" colspan="12"/>
                     <field name="firmware_version" colspan="12"/>                    
                     <field name="unlocked_pass" colspan="12" groups="con_cam.group_dvr_manager"/>
@@ -29,8 +30,8 @@
                                 <page string="Comunicadores">
                                     <group>
                                         <field name="installer_code" colspan="12"/>
-                                        <field name="pc_pass" colspan="12"/>
                                         <field name="panel_id" colspan="12"/>
+                                        <field name="pc_pass" colspan="12"/>
                                     </group>
                                     <field name="comunicator_ids" string="List user">
                                         <tree>
