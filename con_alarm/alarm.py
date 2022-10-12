@@ -17,6 +17,7 @@ class AlarmCentral(models.Model):
     contract_id = fields.Many2one("contract.contract","Contract")
     firmware_version = fields.Char("Firmware version", size=128)
     installer_code = fields.Char("Codigo instalador",size=128)
+    product_id = fields.Many2one("product.product","Product")
     pc_pass = fields.Char("Pc Pass", size=8)
     panel_id = fields.Char("Panel id", size=8)
     serial_central = fields.Char("SN Central",size=128)
