@@ -18,7 +18,7 @@
       <field name="res_model">alarm.central</field>                                
       <field name="view_mode">tree,form</field>                                
       <field name="search_view_id" ref="view_alarm_central_search"></field>                                
-      <field name="context">{'search_default_contract_id': 1}</field>                            
+      <field name="context">{'search_default_contract_id': }</field>                            
     </record>
 
 
