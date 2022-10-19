@@ -17,8 +17,8 @@ class Dvr(models.Model):
     firmware_version = fields.Char("Firmware version", size=128)
     ipv4_number = fields.Char("IpV4", size=512)
     port_number = fields.Char("Port")
-    ezviz_data = fields.Many2many("dvr.ezviz",track_visibility='onchange')
-    list_user = fields.Many2many("dvr.list.user",track_visibility='onchange')
+    ezviz_data = fields.Many2many("dvr.ezviz")
+    list_user = fields.Many2many("dvr.list.user")
     contract_id = fields.Many2one("contract.contract","Contract")
     product_id = fields.Many2one("product.product","Product",track_visibility='onchange')
     unlocked_pass = fields.Char("Unblock pass", size=12, readonly=True)
@@ -26,7 +26,8 @@ class Dvr(models.Model):
     state = fields.Selection ([
             ('bloqued','Bloqueado'),
             ('unbloqued','Desbloqueado'),
-            ],default='unbloqued')
+            ],default='unbloqued')      'contract_id': fields.Many2one('contract.contract','Contract', required=True),
+
 
 #    def get_version(self):
 #        cam = Client('http://192.168.0.2', 'admin', 'admin')
@@ -45,9 +46,12 @@ class Dvr(models.Model):
         rec = super(Dvr, self).create(vals)
         return rec
 
-    def write(self, vals): 
-        res = super(Dvr, self).write(vals)
-        return res
+    @api.onchange('contract_id')
+    def _onchange_contract(self):
+        if self.contract_id:
+            partner_id = self.contract_id.partner_id
+            self.partner_id = partner_id
+
 
     def post_message(self):
         if self.name == self.unlocked_pass:

@@ -6,9 +6,9 @@
 
     <menuitem id="menu_item_integration" name="Integration" sequence="1" groups="base.group_user"/>
 
-    <menuitem id="menu_item_dvr_dvr" name="Dvr" parent="menu_item_integration"
-                  action="action_dvr_dvr_menu" sequence="2" groups="base.group_user"/>
-
+    <menuitem id="menu_item_safe" name="Almacen de claves" sequence="3" parent="menu_item_integration"/>
+    <menuitem id="menu_item_dvr_dvr" name="Dvr" parent="menu_item_safe"
+                  action="action_dvr_dvr_menu" sequence="2" groups="base.group_user" web_icon="cam_dvr,static/src/icon/integrate.jpg"/>
     <record id="dvr_dvr_view_form" model="ir.ui.view">
         <field name="name">dvr.dvr.form</field>
         <field name="model">dvr.dvr</field>
