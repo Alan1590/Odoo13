@@ -22,7 +22,7 @@
     </record>
 
 
-    <menuitem id="menu_item_alarm_central" name="Alarmas" parent="con_cam.menu_item_integration"
+    <menuitem id="menu_item_alarm_central" name="Alarmas" parent="con_cam.menu_item_safe"
                   action="action_alarm_central_menu" sequence="3" groups="base.group_user"   />
 
     <record id="dvr_dvr_view_form" model="ir.ui.view">
@@ -49,8 +49,8 @@
                                 <page string="Comunicadores">
                                     <group>
                                         <field name="installer_code" colspan="12"/>
-                                        <field name="pc_pass" colspan="12"/>
                                         <field name="panel_id" colspan="12"/>
+                                        <field name="pc_pass" colspan="12"/>
                                     </group>
                                     <field name="comunicator_ids" string="List user">
                                         <tree>

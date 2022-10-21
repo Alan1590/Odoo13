@@ -13,6 +13,7 @@ class Dvr(models.Model):
     _name = "dvr.dvr"
     _inherit = 'mail.thread'
     name = fields.Char("Clave desbloqueo", size=256)
+    note = fields.Char("Nota",size=256)
     partner_id = fields.Many2one("res.partner","Cliente")
     firmware_version = fields.Char("Firmware version", size=128)
     ipv4_number = fields.Char("IpV4", size=512)
@@ -26,8 +27,8 @@ class Dvr(models.Model):
     state = fields.Selection ([
             ('bloqued','Bloqueado'),
             ('unbloqued','Desbloqueado'),
-            ],default='unbloqued')      'contract_id': fields.Many2one('contract.contract','Contract', required=True),
-
+            ],default='unbloqued')
+    
 
 #    def get_version(self):
 #        cam = Client('http://192.168.0.2', 'admin', 'admin')
