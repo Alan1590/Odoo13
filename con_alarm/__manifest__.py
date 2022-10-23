@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Add cam views",
+    'name': "Add alarm view",
 
-    'summary': """Cam Views""",
+    'summary': """Alarm Views""",
 
     'description': """
-
+    Añade la vista de alarmas en la ventana de integracion
     """,
 
     'author': "Alan Gon",

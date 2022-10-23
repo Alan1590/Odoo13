@@ -18,12 +18,12 @@
       <field name="res_model">alarm.central</field>                                
       <field name="view_mode">tree,form</field>                                
       <field name="search_view_id" ref="view_alarm_central_search"></field>                                
-      <field name="context">{'search_default_contract_id': }</field>                            
+      <field name="context">{'search_default_contract_id': ''}</field>                            
     </record>
 
 
     <menuitem id="menu_item_alarm_central" name="Alarmas" parent="con_cam.menu_item_safe"
-                  action="action_alarm_central_menu" sequence="3" groups="base.group_user"   />
+                  action="action_alarm_central_menu" sequence="2" groups="base.group_user"   />
 
     <record id="dvr_dvr_view_form" model="ir.ui.view">
         <field name="name">alarm.central.form</field>
@@ -43,24 +43,34 @@
                     <field name="product_id" colspan="12"/>
                     <field name="serial_central" colspan="12"/>
                     <field name="firmware_version" colspan="12"/>                    
-                    <field name="unlocked_pass" colspan="12" groups="con_cam.group_dvr_manager"/>
+                    <field name="unlocked_pass" colspan="12" groups="con_alarm.group_alarm_central_manager"/>
                     </group>
                             <notebook attrs="{'invisible': [ ('state', '=', 'bloqued')]}" >
-                                <page string="Comunicadores">
+                                <page string="Paradox">
                                     <group>
                                         <field name="installer_code" colspan="12"/>
-                                        <field name="panel_id" colspan="12"/>
                                         <field name="pc_pass" colspan="12"/>
+                                        <field name="panel_id" colspan="12"/>
                                     </group>
-                                    <field name="comunicator_ids" string="List user">
+                                </page>
+                                <page string="Hikvision">
+                                    <group>
+                                        <field name="hik_installer_code" colspan="12"/>
+                                        <field name="hik_cod_admin" colspan="12"/>
+                                        <field name="hik_cod_mant" colspan="12"/>
+                                        <field name="hik_cod_operador" colspan="12"/>
+                                    </group>
+                                </page>
+                            </notebook>
+                            <group attrs="{'invisible': [ ('state', '=', 'bloqued')]}">
+                                    <field name="comunicator_ids" string="List comunicators">
                                         <tree>
                                             <field name="com_model"/>
                                             <field name="com_serial"/>                            
                                             <field name="com_password"/>            
                                         </tree>
-                                    </field>|
-                                </page>
-                            </notebook>
+                                    </field>
+                            </group>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>

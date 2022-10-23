@@ -15,12 +15,16 @@ class AlarmCentral(models.Model):
     name = fields.Char("Clave desbloqueo", size=256)
     partner_id = fields.Many2one("res.partner","Cliente")
     contract_id = fields.Many2one("contract.contract","Contract")
-    firmware_version = fields.Char("Firmware version", size=128)
-    installer_code = fields.Char("Codigo instalador",size=128)
     product_id = fields.Many2one("product.product","Product")
-    pc_pass = fields.Char("Pc Pass", size=8)
     panel_id = fields.Char("Panel id", size=8)
     serial_central = fields.Char("SN Central",size=128)
+    firmware_version = fields.Char("Firmware version", size=128)
+    installer_code = fields.Char("Codigo instalador",size=128)
+    pc_pass = fields.Char("Pc Pass", size=8)
+    hik_installer_code = fields.Char("Cod. Instalador",size=64)
+    hik_cod_admin = fields.Char("Cod. Administrador",size=64)
+    hik_cod_mant = fields.Char("Cod. Mantenimiento", size=64)
+    hik_cod_operador = fields.Char("Cod. Operador", size=64)
     comunicator_ids = fields.Many2many("alarms.comunicator")
     unlocked_pass = fields.Char("Unblock pass", size=12, readonly=True)
     state = fields.Selection ([
@@ -80,6 +84,11 @@ class AlarmsComunicators(models.Model):
 class AlarmsComunicatorsModel(models.Model):
     _name = "alarm.comunicators.model"
     name = fields.Char("Nombre", size=16)
+
+class AlarmHikvisionModel(models.Model):
+    _name = "alarm.hikvision.model"
+
+
 
 
 
