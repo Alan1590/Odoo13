@@ -1,0 +1,28 @@
+ <odoo>
+	<record id="contract_control_form" model="ir.ui.view">
+		<field name="name">contract.control.form</field>
+		<field name="model">contract.contract</field>
+		<field name="inherit_id" ref="contract.contract_contract_form_view"/>
+		<field name="arch" type="xml">
+			<xpath expr="//button[@name='action_contract_send']" position="after">
+				<button name='control_invoices' type="object" string="Control contracts"/>
+				<field name="state_control" widget="statusbar" />
+			</xpath>            
+			<xpath expr="//field[@name='partner_id']" position="before">
+				<field name="external_id" />
+			</xpath> 
+		</field>
+	</record>
+
+    <record id="contract_control_tree" model="ir.ui.view">
+    <field name="name">contract.control.tree</field>
+    <field name="model">contract.contract</field>
+    <field name="inherit_id" ref="contract.contract_contract_tree_view"/>
+        <field name="arch" type="xml">
+				<xpath expr="//field[@name='partner_id']" position="after">
+					<field name="state_control"/>
+				</xpath>            
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,56 @@
+ <odoo>
+    <record id="view_cancel_lines_orders_form" model="ir.ui.view">
+    <field name="name">cancel.lines.orders.form</field>
+    <field name="model">massive.edit.line.contract</field>
+    <field name="arch" type="xml">
+	        <form string="Cancel Orders">
+	        	<p>
+	        		Seleccione las lineas a cancelar
+	        		<field name="product_ids" string="Lista de productos"/>
+	        	</p>
+
+	            <p>
+	                ¿Cancelar lineas de contratos?
+	            </p>
+	            <footer>
+	                <button name="cancel_multiple_orders" string="Confirmar" type="object" class="btn-primary"/>
+	                <button string="Cancel" class="btn-default" special="cancel"/>
+	            </footer>
+	        </form>
+	</field>
+	</record>
+
+    <record id="view_create_invoiced_from_contract_form" model="ir.ui.view">
+    <field name="name">create.selected.invoice.form</field>
+    <field name="model">massive.create.invoice.contract</field>
+    <field name="arch" type="xml">
+	        <form string="Create invoice">
+	            <p>
+	                ¿Crear facturas de los contratos seleccionados?
+	            </p>
+	            <footer>
+	                <button name="create_invoice_selected" string="Crear facturas" type="object" class="btn-primary"/>
+	                <button string="Cancel" class="btn-default" special="cancel"/>
+	            </footer>
+	        </form>
+	</field>
+	</record>
+
+<act_window name="Cancelar lineas"
+    id="action_cancel_order"
+    res_model="massive.edit.line.contract"
+    binding_model="contract.contract"
+    binding_views="list"
+    view_mode="form"
+    target="new"
+/>
+
+<act_window name="Crear facturas"
+    id="action_create_invoice"
+    res_model="massive.create.invoice.contract"
+    binding_model="contract.contract"
+    binding_views="list"
+    view_mode="form"
+    target="new"
+/>
+</odoo>
