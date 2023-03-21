@@ -1,0 +1,26 @@
+ <odoo>
+    <record id="general_pass_user_form" model="ir.ui.view">
+        <field name="name">general.pass.user.form</field>
+        <field name="model">general.pass.user</field>
+        <field name="arch" type="xml">
+                <form string="">
+                    <group>
+                        <field name="name" colspan="12"/>
+                        <field name="password" colspan="12"/>                        
+                    </group>
+                </form> 
+        </field>
+    </record>
+
+    <record id="general_pass_user_tree" model="ir.ui.view">
+    <field name="name">general.pass.user.tree</field>
+    <field name="model">general.pass.user</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name" colspan="12"/>
+                <field name="password" colspan="12"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

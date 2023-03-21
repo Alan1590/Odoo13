@@ -1,0 +1,74 @@
+ <odoo>
+		<act_window id="action_general_pass_menu"  
+		name="GeneralPass"  
+		res_model="general.pass"
+		view_mode="tree,form"  />  
+
+	<record id="view_general_pass_search" model="ir.ui.view">                                
+	  <field name="name">general.pass.search</field>                                
+	  <field name="model">general.pass</field>                                
+	  <field name="arch" type="xml">                                    
+		<search string="Search">                                        
+		  <field name="identification"></field>                                        
+		  <field name="note"></field>                                                                            
+		</search>                               
+	  </field>                            
+	</record>
+
+	<record id="action_general_pass_menu" model="ir.actions.act_window">                                
+	  <field name="name">GeneralPass</field>                                
+	  <field name="type">ir.actions.act_window</field>                                
+	  <field name="res_model">general.pass</field>                                
+	  <field name="view_mode">tree,form</field>                                
+	  <field name="search_view_id" ref="view_general_pass_search"></field>                                
+	  <field name="context">{'search_default_note': ''}</field>                            
+	</record>
+
+
+    <menuitem id="menu_item_general_pass" name="General Pass" parent="con_cam.menu_item_safe"
+                  action="action_general_pass_menu" sequence="2" groups="base.group_user"   />
+	<record id="dge_view_form" model="ir.ui.view">
+		<field name="name">general.pass.form</field>
+		<field name="model">general.pass</field>
+		<field name="arch" type="xml">
+				<form string="">
+					<header>
+						<button type="object" name="post_message" string="Desbloquear" attrs="{'invisible': [ ('state', 'in', ['unbloqued'])]}" />
+						<field name="state" widget="statusbar" statusbar_visible='bloqued,unbloqued'/>
+					</header>
+					<sheet>
+					<group>
+					<field name="write_date" invisible="1"/>                        
+					<field name="name" string="Clave desbloqueo" colspan="12" attrs="{'required': [ ('state', '=', 'bloqued')], 'invisible': [('write_date', '=', False)]}" />
+					<field name="identification" colspan="12"/>
+					<field name="note"/>
+					<field name="unlocked_pass" colspan="12" groups="con_cam.group_dvr_manager"/>
+					</group>
+							<notebook attrs="{'invisible': [ ('state', '=', 'bloqued')]}" >
+								<page string="Usuarios">
+									<group>
+										<field name="users_ids" string="Lista usuarios"/>
+									</group>
+								</page>
+							</notebook>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form> 
+		</field>
+	</record>
+
+	<record id="general_pass_tree" model="ir.ui.view">
+	<field name="name">general.pass.tree</field>
+	<field name="model">general.pass</field>
+		<field name="arch" type="xml">
+			<tree>
+				<field name="identification"/>
+				<field name="note"/>
+			</tree>
+		</field>
+	</record>
+
+</odoo>

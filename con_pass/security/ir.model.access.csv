@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_general_pass_user,access_general_pass,model_general_pass,group_general_pass_user,1,1,1,0
+access_general_pass_manager,access_general_pass,model_general_pass,group_general_pass_manager,1,1,1,1
+access_general_pass_user_user,access_general_pass_user,model_general_pass_user,group_general_pass_user,1,0,0,0
+access_general_pass_user_manager,access_general_pass_user,model_general_pass_user,group_general_pass_manager,1,1,1,1
