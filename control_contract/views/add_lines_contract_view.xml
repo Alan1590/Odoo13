@@ -1,0 +1,27 @@
+<odoo>
+    <record id="view_add_lines_orders_form" model="ir.ui.view">
+    <field name="name">add.lines.orders.form</field>
+    <field name="model">massive.add.lines.contract</field>
+    <field name="arch" type="xml">
+	        <form string="Add lines">
+	        	<p>
+	        		<field name="contract_lines_ids" string="Lista de productos" options="{'no_quick_create': True, 'no_create' : True}"/>
+	        	</p>
+	            <footer>
+	                <button name="add_lines_order" string="Agregar lineas" type="object" class="btn-primary"/>	                
+	                <button string="Cancel" class="btn-default" special="cancel"/>
+	            </footer>
+	        </form>
+	</field>
+	</record>
+
+<act_window name="Agregar lineas"
+    id="action_add_line_order"
+    res_model="massive.add.lines.contract"
+    binding_model="contract.contract"
+    binding_views="list"
+    view_mode="form"
+    target="new"
+/>
+
+</odoo>

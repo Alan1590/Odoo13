@@ -5,15 +5,17 @@
     <field name="arch" type="xml">
 	        <form string="Cancel Orders">
 	        	<p>
-	        		Seleccione las lineas a cancelar
+	        		Seleccione las lineas
 	        		<field name="product_ids" string="Lista de productos"/>
 	        	</p>
 
 	            <p>
-	                ¿Cancelar lineas de contratos?
+	                ¿Que desea hacer?
 	            </p>
 	            <footer>
-	                <button name="cancel_multiple_orders" string="Confirmar" type="object" class="btn-primary"/>
+	                <button name="cancel_multiple_orders" string="Cancelar lineas" type="object" class="btn-primary"/>
+	                <button name="enabled_lines_orders" string="Habilitar lineas" type="object" class="btn-primary"/>	                
+	                <button name="add_lines_order" string="Agregar lineas" type="object" class="btn-primary"/>	                
 	                <button string="Cancel" class="btn-default" special="cancel"/>
 	            </footer>
 	        </form>
@@ -36,7 +38,7 @@
 	</field>
 	</record>
 
-<act_window name="Cancelar lineas"
+<act_window name="Edicion masiva"
     id="action_cancel_order"
     res_model="massive.edit.line.contract"
     binding_model="contract.contract"

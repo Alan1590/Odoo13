@@ -20,6 +20,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/cancel_contract_line_view.xml',
+        'views/add_lines_contract_view.xml',
         'views/control_contract_view.xml',
     ],
 }
