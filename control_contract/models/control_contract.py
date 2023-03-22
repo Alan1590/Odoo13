@@ -122,8 +122,16 @@ class MassiveAddLinesContract(models.TransientModel):
 	def add_lines_order(self):
 		for record in self._context.get('active_ids'):
 			contract = self.env[self._context.get('active_model')].browse(record)
-			for lines in self.contract_lines_ids:
-				if lines not in contract_lines:
-					lines.write({'contract_id': contract.id,
-						'name':lines.name, 'product_id':lines.product_id})
+			l_lines = self._get_lines_contract(contract.id)
+			for line in self.contract_lines_ids:
+
+				if line.product_id not in l_lines.product_id:
+					_logger.warning("%s %s" %(contract.id,line.id))
+
+					line.create({'contract_id': contract.id,
+						'name':line.name, 'product_id':line.product_id.id})
 	
+	def _get_lines_contract(self,contract_id):
+		lines = self.env['contract.line'].search([('contract_id','=',contract_id)],)
+		return lines
+		
