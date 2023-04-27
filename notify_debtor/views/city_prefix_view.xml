@@ -1,0 +1,22 @@
+<odoo>
+
+    <act_window id="action_city_prefix_menu"  
+        name="CityPrefix"  
+        res_model="city.prefix"
+        view_mode="tree" />  
+
+    <menuitem id="menu_item_city_prefix" name="Configurar prefijo" parent="menu_item_notifications"
+                  action="action_city_prefix_menu" sequence="2" groups="base.group_user"   />
+
+    <record id="city_prefix_tree" model="ir.ui.view">
+    <field name="name">city.prefix.tree</field>
+    <field name="model">city.prefix</field>
+        <field name="arch" type="xml">
+            <tree editable="top"> 
+                <field name="name"/>
+                <field name="prefix"/>
+            </tree>                
+        </field>
+    </record>
+
+</odoo>

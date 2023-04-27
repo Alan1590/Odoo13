@@ -1,0 +1,58 @@
+ <odoo>
+
+    <act_window id="action_notify_debtor_menu"  
+        name="NotifyDebtor"  
+        res_model="notify.debtor"
+        view_mode="tree,form"  />  
+
+    <menuitem id="menu_item_notifications" name="Notificaciones" sequence="3" parent="con_cam.menu_item_integration"/>
+
+    <menuitem id="menu_item_notify_debtor" name="Notificar deudores" parent="menu_item_notifications"
+                  action="action_notify_debtor_menu" sequence="2" groups="base.group_user"   />
+
+    <record id="notify_debtor_form" model="ir.ui.view">
+        <field name="name">notify.debtor.form</field>
+        <field name="model">notify.debtor</field>
+        <field name="arch" type="xml">
+            <form>
+                    <header>
+                        <button type="object" name="get_invoices" string="Get invoices" />
+                    </header>
+            <sheet>
+                    <group>                
+                        <field name="name" colspan="12"/>
+                        <field name="journal_id" colspan="12"/>
+                        <field name="init_date" colspan="12"/>
+                        <field name="end_date" colspan="12"/>
+                    </group>
+                    <notebook>
+                        <page string="Deudores">
+                                <field name="partner_ids" context="{'parent_id':active_id, 'parent_model':'notify.deb'}" >
+                                <tree>
+                                    <field name="name" />
+                                    <field name="mobile" string="Mobil"/>
+                                    <button name="send_wp" type="object" string="Notificar" icon="fa-envelope-o fa-2x" />
+                                </tree>                                    
+                                </field>
+                        </page>
+                    </notebook>
+            </sheet>
+
+            </form>
+
+        </field>
+    </record>
+
+    <record id="notify_debtor_tree" model="ir.ui.view">
+    <field name="name">notify.debtor.tree</field>
+    <field name="model">notify.debtor</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+                <field name="init_date"/>
+                <field name="end_date"/>
+            </tree>                
+        </field>
+    </record>
+
+</odoo>
