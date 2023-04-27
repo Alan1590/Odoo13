@@ -1,22 +1,22 @@
  <odoo>
  	<!-- Create category for dvr security  !-->
- 	<record model="ir.module.category" id="general_pass_security">
-	  <field name="name">General Pass</field>
+ 	<record model="ir.module.category" id="notify_user_security">
+	  <field name="name">Notify user</field>
 	  <field name="description">Administrate security level</field>
 	  <field name="sequence">3</field>
 	</record>
 
  	<!-- Group manager, inherit from base group  !-->
-   <record id="group_general_pass_user" model="res.groups">
+   <record id="group_notify_user" model="res.groups">
      <field name="name">User</field>
      <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
      <field name="users" eval="[(4, ref('base.user_root'))]"/>
-     <field name="category_id" ref="general_pass_security"/>
+     <field name="category_id" ref="notify_user_security"/>
     </record>
  	<!-- Group manager, inherit from group_dvr_user  !-->
-    <record id="group_general_pass_manager" model="res.groups">
+    <record id="group_notify_manager" model="res.groups">
       <field name="name">Manager</field>
-      <field name="implied_ids" eval="[(4, ref('group_general_pass_user'))]"/>
-      <field name="category_id" ref="general_pass_security"/>
+      <field name="implied_ids" eval="[(4, ref('group_notify_user'))]"/>
+      <field name="category_id" ref="notify_user_security"/>
     </record>
 </odoo>

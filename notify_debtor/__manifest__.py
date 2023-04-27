@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
-    'name': "Add general pass view",
+    'name': "Add notification menu",
 
-    'summary': """General pass""",
+    'summary': """Notified to debtor""",
 
     'description': """
 
