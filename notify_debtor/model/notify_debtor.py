@@ -28,7 +28,7 @@ class NotifyDebtor(models.Model):
 				lpartner.append(inv.partner_id.id)
 				invoices = self._get_list_invoices_partner(inv.partner_id.id)
 				inv.partner_id.n_invoices = len(invoices)
-				for id_invoice in invoice_ids:
+				for id_invoice in invoices:
 					lid_invoices.append(id_invoice.id)
 				inv.partner_id.write({'invoices_ids': [(6,0,lid_invoices)] })
 		self.partner_ids = [(6,0,lpartner)]
