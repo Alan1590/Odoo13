@@ -17,24 +17,36 @@
             <form>
                     <header>
                         <button type="object" name="get_invoices" string="Get invoices" />
+                        <button type="object" name="update" string="Actualizar" />
+
                     </header>
             <sheet>
                     <group>                
                         <field name="name" colspan="12"/>
-                        <field name="journal_id" colspan="12"/>
                         <field name="init_date" colspan="12"/>
                         <field name="end_date" colspan="12"/>
                     </group>
                     <notebook>
-                        <page string="Deudores">
-                                <field name="partner_ids" context="{'parent_id':active_id, 'parent_model':'notify.deb'}" >
+                        <page name="debtors_page" string="Deudores">
+                                <field name="partner_ids" context="{'parent_id':active_id}" >
                                 <tree>
                                     <field name="name" />
                                     <field name="mobile" string="Mobil"/>
+                                    <field name="n_invoices"/>
                                     <button name="send_wp" type="object" string="Notificar" icon="fa-envelope-o fa-2x" />
+                                    <button name="is_notified" type="object" string="Enviado" icon="fa-check-square-o fa-2x" />
                                 </tree>                                    
                                 </field>
                         </page>
+                        <page name="notified_page" string="Notificados">
+                                <field name="notified_ids">
+                                <tree>
+                                    <field name="create_date" style="width: 10%"/>
+                                    <field name="partner_id" style="width: 35%"/>
+                                    <field name="name" string="Comentario" style="width: 55%"/>
+                                </tree>                                    
+                                </field>
+                        </page>                        
                     </notebook>
             </sheet>
 

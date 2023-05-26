@@ -1,5 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_notify_debtor_user,access_notify_debtor,model_notify_debtor,group_notify_debtor_user,1,1,1,0
 access_notify_debtor_manager,access_notify_debtor,model_notify_debtor,group_notify_debtor_manager,1,1,1,1
+access_notify_debtor_notified_user,access_notify_debtor_notified,model_notify_debtor_notified,group_notify_debtor_user,1,1,1,0
+access_notify_debtor_notified_manager,access_notify_debtor_notified,model_notify_debtor_notified,group_notify_debtor_manager,1,1,1,1
 access_city_prefix_user,access_city_prefix,model_city_prefix,group_notify_debtor_user,1,1,1,0
 access_city_prefix_manager,access_city_prefix,model_city_prefix,group_notify_debtor_manager,1,1,1,1

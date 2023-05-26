@@ -1,7 +1,7 @@
  <odoo>
  	<!-- Create category for dvr security  !-->
  	<record model="ir.module.category" id="notify_debtor_security">
-	  <field name="name">General Pass</field>
+	  <field name="name">Notify debtor</field>
 	  <field name="description">Administrate security level</field>
 	  <field name="sequence">3</field>
 	</record>
