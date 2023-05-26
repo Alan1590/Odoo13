@@ -69,7 +69,7 @@ class NotifyDebtorPartner(models.Model):
 		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
 
 		amount_total = 0
-		for invoices in self.invoics_ids:
+		for invoices in self.invoices_ids:
 			amount_total += invoices.amount_residual
 
 		message = self._get_message(self.name,amount_total,self.email)
