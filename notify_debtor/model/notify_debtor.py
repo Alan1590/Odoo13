@@ -65,11 +65,18 @@ class NotifyDebtorPartner(models.Model):
 	invoices_ids = fields.Many2many("account.move",readonly=True)
 	n_invoices = fields.Integer("Num facturas", readonly=True)
 
+	def _get_list_invoices_partner(self, partner_id, init_date, end_date):
+		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', init_date),('invoice_date_due', '<', end_date)
+			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid'),
+			('partner_id', '=', partner_id)])
+		return l_invoices	
+
+
 	def send_wp(self):
 		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
-
+		l_invoices = self._get_list_invoices_partner(self.id,debtor.init_date,debtor.end_date)
 		amount_total = 0
-		for invoices in self.invoices_ids:
+		for invoices in l_invoices:
 			amount_total += invoices.amount_residual
 
 		message = self._get_message(self.name,amount_total,self.email)
