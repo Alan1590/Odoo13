@@ -41,6 +41,8 @@
                     <field name="contract_id" colspan="12" />
                     <field name="partner_id" colspan="12"/>
                     <field name="product_id" colspan="12"/>
+                    <field name="site_id" colspan="12"/>
+                    <field name="email" colspan="12"/>
                     <field name="serial_central" colspan="12"/>
                     <field name="firmware_version" colspan="12"/>                    
                     <field name="unlocked_pass" colspan="12" groups="con_alarm.group_alarm_central_manager"/>
@@ -61,6 +63,7 @@
                                         <field name="hik_cod_operador" colspan="12"/>
                                     </group>
                                 </page>
+
                             </notebook>
                             <group attrs="{'invisible': [ ('state', '=', 'bloqued')]}">
                                     <field name="comunicator_ids" string="List comunicators">
@@ -89,6 +92,9 @@
                 <!-- Add All Fields You Want In The List Here -->
                 <field name="contract_id" />
                 <field name="serial_central"/>
+                <field name="site_id" colspan="12"/>
+                <field name="email" colspan="12"/>
+
             </tree>
         </field>
     </record>

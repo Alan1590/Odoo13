@@ -20,6 +20,8 @@ class AlarmCentral(models.Model):
     serial_central = fields.Char("SN Central",size=128)
     firmware_version = fields.Char("Firmware version", size=128)
     installer_code = fields.Char("Codigo instalador",size=128)
+    site_id = fields.Char("Id del sitio", size=256)
+    email = fields.Char("Email", size=256)
     pc_pass = fields.Char("Pc Pass", size=8)
     hik_installer_code = fields.Char("Cod. Instalador",size=64)
     hik_cod_admin = fields.Char("Cod. Administrador",size=64)
@@ -89,6 +91,7 @@ class AlarmHikvisionModel(models.Model):
     _name = "alarm.hikvision.model"
 
 
+    
 
 
 
