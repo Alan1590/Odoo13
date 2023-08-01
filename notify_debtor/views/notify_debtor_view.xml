@@ -43,14 +43,6 @@
                                 </field>
                             </tree>
                         </page>
-                        <page name="notified_page" string="Notificados">
-                                <field name="notified_ids">
-                                <tree>
-                                    <field name="create_date" style="width: 10%"/>
-                                    <field name="name" string="Comentario" style="width: 55%"/>
-                                </tree>                                    
-                                </field>
-                        </page>                        
                     </notebook>
             </sheet>
 
