@@ -16,8 +16,9 @@
         <field name="arch" type="xml">
             <form>
                     <header>
-                        <button type="object" name="get_invoices" string="Get invoices" />
-                        <button type="object" name="update" string="Actualizar" />
+                        <field name="state" widget="statusbar"></field>                    
+                        <button type="object" name="get_invoices" string="Get invoices" states='new' />
+                        <button type="object" name="close" string="Cerrar" states='open'/>
 
                     </header>
             <sheet>
@@ -28,21 +29,24 @@
                     </group>
                     <notebook>
                         <page name="debtors_page" string="Deudores">
-                                <field name="partner_ids" context="{'parent_id':active_id}" >
-                                <tree>
-                                    <field name="name" />
-                                    <field name="mobile" string="Mobil"/>
-                                    <field name="n_invoices"/>
-                                    <button name="send_wp" type="object" string="Notificar" icon="fa-envelope-o fa-2x" />
-                                    <button name="is_notified" type="object" string="Enviado" icon="fa-check-square-o fa-2x" />
-                                </tree>                                    
+                            <tree>
+                                <field name="notify_debtor_partner_ids" context="{'parent_id':active_id}">
+                                    <tree>
+                                        <field name="partner_id"></field>
+                                        <field name="telephone"></field>
+                                        <field name="num_notification"></field>
+                                        <field name="amount_toltal_invoices"></field>
+                                        <field name="alredy_notified"></field>
+                                        <button name="send_wp" type="object" string="Notificar" icon="fa-envelope-o fa-2x" />
+                                        <button name="is_notified" type="object" string="Enviado"  icon="fa-check-square-o fa-2x" />
+                                    </tree>
                                 </field>
+                            </tree>
                         </page>
                         <page name="notified_page" string="Notificados">
                                 <field name="notified_ids">
                                 <tree>
                                     <field name="create_date" style="width: 10%"/>
-                                    <field name="partner_id" style="width: 35%"/>
                                     <field name="name" string="Comentario" style="width: 55%"/>
                                 </tree>                                    
                                 </field>

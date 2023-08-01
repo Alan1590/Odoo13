@@ -5,7 +5,7 @@
     <field name="arch" type="xml">
             <form string="Add lines">
                 <group>                
-                    <field name="name" colspan="12"/>
+                    <field name="name" colspan="12" string="Mensaje"/>
                     <field name="notify_id" colspan="12" />
                     <field name="partner_id" colspan="12" />
 

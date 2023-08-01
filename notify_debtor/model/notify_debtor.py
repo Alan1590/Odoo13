@@ -10,34 +10,47 @@ class NotifyDebtor(models.Model):
 	_name = "notify.debtor"
 	_inherit = 'mail.thread'
 	name = fields.Char("Nombre", size=256, required=True)
-	partner_ids = fields.Many2many("res.partner",readonly=True)
 	notified_ids = fields.Many2many("notify.debtor.notified",readonly=True)
 	init_date = fields.Date("Fecha inicio",required=True)
 	end_date = fields.Date("Fecha final",required=True)
+	notify_debtor_partner_ids = fields.Many2many("notify.debtor.partner",readonly=True)
+	state = fields.Selection ([
+ 			('new','Nuevo'),
+ 			('open','En tratamiento'),
+ 			('close','finalizado'), 			
+ 			],default='new')
 
 	def unlink(self):
 		self.env["notify.debtor.notified"].search([('notify_id', '=', self.id),]).unlink()
 		return super(NotifyDebtor, self).unlink()
 
 	def get_invoices(self):
+		lnotify_ids = []
+		lpartner_ids = []
+		total_invoices = 0
 		invoice_ids = self._get_list_invoices(self.init_date, self.end_date)
-		lpartner =[]
-		lid_invoices = []
 		for inv in invoice_ids:
-			if inv.partner_id.id not in lpartner:
-				lpartner.append(inv.partner_id.id)
-				invoices = self._get_list_invoices_partner(inv.partner_id.id)
-				inv.partner_id.n_invoices = len(invoices)
-				for id_invoice in invoices:
-					lid_invoices.append(id_invoice.id)
-				inv.partner_id.write({'invoices_ids': [(6,0,lid_invoices)] })
-		self.partner_ids = [(6,0,lpartner)]
+			invoices_for_partner = self._get_list_invoices_partner(self.init_date, self.end_date,inv.partner_id.id)
+			n_invoices = len(invoices_for_partner)
+			for id_invoice in invoices_for_partner:
+				total_invoices += id_invoice.amount_residual
+			if inv.partner_id.id not in lpartner_ids:
+				l_notify = self.env['notify.debtor.partner'].create({
+					'partner_id': invoices_for_partner.partner_id.id,
+					'telephone': invoices_for_partner.partner_id.mobile,					
+					'num_notification': 0,
+					'n_invoices': n_invoices,
+					'amount_toltal_invoices': total_invoices,
+					'alredy_notified': 'not_notified',
+				})
+				lnotify_ids.append(l_notify.id)
+			lpartner_ids.append(inv.partner_id.id)
+		self.write({'notify_debtor_partner_ids': [(6,0,lnotify_ids)] })
+		self.state = 'open'
+		return lpartner_ids
 
-		return lpartner
-
-	def update(self):
-		ids_notified = self._get_list_notified()
-		self.write({"notified_ids":[(6,0,ids_notified)]})
+	def close(self):
+		self.state = 'close'
 
 	def _get_list_notified(self):
 		l_notified = self.env["notify.debtor.notified"].search([('notify_id', '=', self.id),])
@@ -47,39 +60,48 @@ class NotifyDebtor(models.Model):
 
 		return l_ids
 
-	def _get_list_invoices(self,init_date,end_date):
-		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', self.init_date),('invoice_date_due', '<', self.end_date)
-			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid')])
-		return l_invoices
-
-	def _get_list_invoices_partner(self, partner_id):
-		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', self.init_date),('invoice_date_due', '<', self.end_date)
-			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid'),
-			('partner_id', '=', partner_id)])
-		return l_invoices	
-
-
-class NotifyDebtorPartner(models.Model):
-	_inherit = "res.partner"
-	num_notification = fields.Integer("Num envios", readonly=True)
-	invoices_ids = fields.Many2many("account.move",readonly=True)
-	n_invoices = fields.Integer("Num facturas", readonly=True)
-
-	def _get_list_invoices_partner(self, partner_id, init_date, end_date):
+	def _get_list_invoices_partner(self,init_date,end_date, partner_id):
 		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', init_date),('invoice_date_due', '<', end_date)
 			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid'),
 			('partner_id', '=', partner_id)])
 		return l_invoices	
 
 
+	def _get_list_invoices(self,init_date,end_date):
+		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', init_date),('invoice_date_due', '<', end_date)
+			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid')])
+		return l_invoices	
+
+class NotifyDebtorPartner(models.Model):
+	_name="notify.debtor.partner"
+	partner_id = fields.Many2one("res.partner",readonly=True)
+	telephone = fields.Char("Telefono",size=256, readonly=True)
+	num_notification = fields.Integer("Num envios", readonly=True)
+	n_invoices = fields.Integer("Num facturas", readonly=True)
+	amount_toltal_invoices = fields.Float("Total facturas", readonly=True)
+	notified_ids = fields.Many2many("notify.debtor.notified",readonly=True)
+
+	alredy_notified = fields.Selection ([
+ 			('notified','Notificado'),
+ 			('not_notified','No notificado'),
+ 			],default='not_notified')
+
+	def _get_list_invoices_partner(self, partner_id, init_date, end_date):
+		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', init_date),('invoice_date_due', '<', end_date)
+			,('state','=','posted'),('type','=','out_invoice'),('invoice_payment_state', '!=', 'paid'),
+			('partner_id', '=', partner_id)])
+		return l_invoices
+
+
 	def send_wp(self):
 		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
+		if debtor.state == 'close':
+			raise ValidationError("El documento se encuentra cerrado")
 		l_invoices = self._get_list_invoices_partner(self.id,debtor.init_date,debtor.end_date)
 		amount_total = 0
 		for invoices in l_invoices:
 			amount_total += invoices.amount_residual
-
-		message = self._get_message(self.name,amount_total,self.email)
+		message = self._get_message(self.partner_id.name,amount_total,self.partner_id.email)
 		phone = self._get_telphone()
 		url = ("https://wa.me/{}?text={}".format(phone,message))
 		client_action = {
@@ -93,18 +115,21 @@ class NotifyDebtorPartner(models.Model):
 		'url': url,
 
 		}
-		n_not = self.num_notification + 1 
-		self.write({'num_notification': n_not})
-
 		return client_action
 
 	def is_notified(self):
+		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
+		
+		if debtor.state == 'close':
+			raise ValidationError("El documento se encuentra cerrado")
+
 		return {'type': 'ir.actions.act_window',
 			'name': _('Is notified'),
 			'res_model': 'notify.debtor.notified',
 			'target': 'new',
 			'view_mode': 'form',
-			'context': {'default_notify_id': self.env.context.get("parent_id"), 'default_partner_id': self.id}
+			'context': {'default_notify_id': self.env.context.get("parent_id"), 'default_partner_id': self.partner_id.id, 
+			'default_notify_debtor_partner':self.id}
 			}
 
 	def _get_message(self,partner_name, amount_total, partner_email):
@@ -118,7 +143,7 @@ class NotifyDebtorPartner(models.Model):
 		return message
 
 	def _get_telphone(self):
-		mobile = self.mobile
+		mobile = self.partner_id.mobile
 		if not mobile:
 			raise ValidationError("El cliente no posee telefono asignado")
 		else:
@@ -130,7 +155,7 @@ class NotifyDebtorPartner(models.Model):
 		if len(mobile) < 6:
 			raise ValidationError("La cantidad de digitos no es correcto.")
 		else:
-			prefix = self._get_prefix(self.city)
+			prefix = self._get_prefix(self.partner_id.city)
 			mobile = prefix +  mobile.strip()[-7:]
 		return mobile.replace("-","")
 
@@ -145,7 +170,20 @@ class NotifyDebtorPartner(models.Model):
 
 class NotifyDebtorNotified(models.Model):
 	_name = "notify.debtor.notified"
-	name = fields.Char("Nombre", size=256, required=True)
+	name = fields.Char("Mensaje", size=256, required=True,readonly=False)
 	notify_id = fields.Many2one("notify.debtor", readonly=True)
 	partner_id = fields.Many2one("res.partner",readonly=True)
+	
+	@api.model
+	def create(self,vals):
+		debtor_partner_id = self._get_partner_id(self.env.context.get("default_notify_debtor_partner"))
+		n_not = debtor_partner_id.num_notification + 1
+		debtor_partner_id.num_notification = n_not
+		debtor_partner_id.alredy_notified = 'notified'
+		res = super(NotifyDebtorNotified, self).create(vals)
+		debtor_partner_id.notified_ids = [(4,res.id)]
+		return res
 
+
+	def _get_partner_id(self,partner_id):
+		return self.env["notify.debtor.partner"].search([('id', '=', partner_id)])

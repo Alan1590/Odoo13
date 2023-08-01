@@ -1,0 +1,29 @@
+<odoo>
+	<record id="notify_debtor_partner_form" model="ir.ui.view">
+		<field name="name">notify.debtor.partner.form</field>
+		<field name="model">notify.debtor.partner</field>
+		<field name="arch" type="xml">
+			<form>
+					<header>
+						<field name="alredy_notified" widget="statusbar"></field>                    
+                    </header>
+			<sheet>
+					<group>                
+						<field name="partner_id" colspan="12"></field>
+						<field name="telephone" colspan="12"></field>
+						<field name="num_notification" colspan="12"></field>
+						<field name="amount_toltal_invoices" colspan="12"></field>
+					</group>
+                        <field name="notified_ids" context="{'parent_id':active_id}">
+                        	<tree>
+                        		<field name="create_date"/>
+                        		<field name="name"/>
+                        	</tree>
+                        </field>
+
+			</sheet>
+
+			</form>
+		</field>
+	</record>
+</odoo>
