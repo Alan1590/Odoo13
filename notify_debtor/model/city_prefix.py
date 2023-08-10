@@ -10,5 +10,5 @@ _logger = logging.getLogger(__name__)
 
 class CityPrefix(models.Model):
 	_name = "city.prefix"
-	name = fields.Char("Nombre", size=256)
-	prefix = fields.Char("Prefijo", size=6)
+	name = fields.Char("Nombre", size=256, required=True)
+	prefix = fields.Char("Prefijo", size=6, required=True)

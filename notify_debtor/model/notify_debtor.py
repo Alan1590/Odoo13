@@ -27,9 +27,9 @@ class NotifyDebtor(models.Model):
 	def get_invoices(self):
 		lnotify_ids = []
 		lpartner_ids = []
-		total_invoices = 0
 		invoice_ids = self._get_list_invoices(self.init_date, self.end_date)
 		for inv in invoice_ids:
+			total_invoices = 0
 			invoices_for_partner = self._get_list_invoices_partner(self.init_date, self.end_date,inv.partner_id.id)
 			n_invoices = len(invoices_for_partner)
 			for id_invoice in invoices_for_partner:
