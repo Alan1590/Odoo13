@@ -101,7 +101,7 @@ class NotifyDebtorPartner(models.Model):
 		amount_total = 0
 		for invoices in l_invoices:
 			amount_total += invoices.amount_residual
-		message = self._get_message(self.partner_id.name,amount_total,self.partner_id.email)
+		message = self._get_message(self.partner_id.name,self.amount_toltal_invoices,self.partner_id.email)
 		phone = self._get_telphone()
 		url = ("https://wa.me/{}?text={}".format(phone,message))
 		client_action = {
@@ -134,7 +134,7 @@ class NotifyDebtorPartner(models.Model):
 
 	def _get_message(self,partner_name, amount_total, partner_email):
 		message = """
-		Estimado-a:%20Nos%20comsunicamos%20de%20Marinozzi%20Sistemas%20de%20Seguridad,%20tenemos%20registradas%20facturas%20pendientes%20de%20la%20cuenta%20de%20{},%20
+		Estimado-a:%20Nos%20comunicamos%20de%20Marinozzi%20Sistemas%20de%20Seguridad,%20tenemos%20registradas%20facturas%20pendientes%20de%20la%20cuenta%20de%20{},%20
 		en%20total%20suman%20un%20saldo%20de%20{},%20recuerde%20que%20para%20evitar%20la%20acumulacion%20de%20saldo%20debe%20revisar%20su%20mail%20(allí%20es%20donde%20se%20envían%20todos%20los%20meses%20las%20facturas),%20
 		favor%20de%20confirmar%20si%20es%20correcto%20el%20mail%20que%20tenemos%20registrado%20{}%20le%20informamos%20que%20contamos%20con%20la%20opción%20de%20pago%20
 		por%20Débito%20Automático%20por%20Tarjeta%20de%20Crédito,%20que%20realizamos%20los%20primeros%20días%20del%20mes,%20lo%20invitamos%20a%20que%20se%20sume%20y%20lograr%20mayor%20practicidad.
@@ -163,7 +163,7 @@ class NotifyDebtorPartner(models.Model):
 	def _get_prefix(self,city):
 		result = self.env["city.prefix"].search([('name', '=', city),])
 		if result:
-			return "%s%s" %((self.country_id.phone_code), result.prefix)
+			return "%s%s" %((self.partner_id.country_id.phone_code), result.prefix)
 		else:
 			raise ValidationError("No existe prefijo para esta ciudad.")
 
