@@ -14,11 +14,13 @@ class NotifyDebtor(models.Model):
 	init_date = fields.Date("Fecha inicio",required=True)
 	end_date = fields.Date("Fecha final",required=True)
 	notify_debtor_partner_ids = fields.Many2many("notify.debtor.partner",readonly=True)
+	template_id = fields.Many2one("notify.debtor.template")
+
 	state = fields.Selection ([
- 			('new','Nuevo'),
- 			('open','En tratamiento'),
- 			('close','finalizado'), 			
- 			],default='new')
+			('new','Nuevo'),
+			('open','En tratamiento'),
+			('close','finalizado'), 			
+			],default='new')
 
 	def unlink(self):
 		self.env["notify.debtor.notified"].search([('notify_id', '=', self.id),]).unlink()
@@ -82,9 +84,9 @@ class NotifyDebtorPartner(models.Model):
 	notified_ids = fields.Many2many("notify.debtor.notified",readonly=True)
 
 	alredy_notified = fields.Selection ([
- 			('notified','Notificado'),
- 			('not_notified','No notificado'),
- 			],default='not_notified')
+			('notified','Notificado'),
+			('not_notified','No notificado'),
+			],default='not_notified')
 
 	def _get_list_invoices_partner(self, partner_id, init_date, end_date):
 		l_invoices = self.env["account.move"].search([("&"),('invoice_date_due', '>', init_date),('invoice_date_due', '<', end_date)
@@ -94,27 +96,39 @@ class NotifyDebtorPartner(models.Model):
 
 
 	def send_wp(self):
+		client_action = {}
 		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
 		if debtor.state == 'close':
 			raise ValidationError("El documento se encuentra cerrado")
-		l_invoices = self._get_list_invoices_partner(self.id,debtor.init_date,debtor.end_date)
-		amount_total = 0
-		for invoices in l_invoices:
-			amount_total += invoices.amount_residual
-		message = self._get_message(self.partner_id.name,self.amount_toltal_invoices,self.partner_id.email)
-		phone = self._get_telphone()
-		url = ("https://wa.me/{}?text={}".format(phone,message))
-		client_action = {
+		l_invoices = self._get_list_invoices_partner(self.partner_id.id,debtor.init_date,debtor.end_date)
+		if len(l_invoices) == 0:
+			client_action = {
+				'type': 'ir.actions.client',
+				'tag': 'display_notification',
+				'params': {
+					'title': ('Informacion'),
+					'message': 'El cliente seleccionado ya no posee facturas pendientes, se elimina',
+					'type':'info',  #types: success,warning,danger,info
+					'sticky': True,  #True/False will display for few seconds if false
+				},
+			}
+			self.unlink()
+		else:
+			amount_total = self.amount_toltal_invoices
+			message = self._get_message(self.partner_id.name,self.amount_toltal_invoices,self.partner_id.email)
+			phone = self._get_telphone()
+			url = ("https://wa.me/{}?text={}".format(phone,message))
+			client_action = {
 
-		'type': 'ir.actions.act_url',
+			'type': 'ir.actions.act_url',
 
-		'name': "sendWP",
+			'name': "sendWP",
 
-		'target': 'new',
+			'target': 'new',
 
-		'url': url,
+			'url': url,
 
-		}
+			}
 		return client_action
 
 	def is_notified(self):
@@ -133,13 +147,12 @@ class NotifyDebtorPartner(models.Model):
 			}
 
 	def _get_message(self,partner_name, amount_total, partner_email):
-		message = """
-		Estimado-a:%20Nos%20comunicamos%20de%20Marinozzi%20Sistemas%20de%20Seguridad,%20tenemos%20registradas%20facturas%20pendientes%20de%20la%20cuenta%20de%20{},%20
-		en%20total%20suman%20un%20saldo%20de%20{},%20recuerde%20que%20para%20evitar%20la%20acumulacion%20de%20saldo%20debe%20revisar%20su%20mail%20(allí%20es%20donde%20se%20envían%20todos%20los%20meses%20las%20facturas),%20
-		favor%20de%20confirmar%20si%20es%20correcto%20el%20mail%20que%20tenemos%20registrado%20{}%20le%20informamos%20que%20contamos%20con%20la%20opción%20de%20pago%20
-		por%20Débito%20Automático%20por%20Tarjeta%20de%20Crédito,%20que%20realizamos%20los%20primeros%20días%20del%20mes,%20lo%20invitamos%20a%20que%20se%20sume%20y%20lograr%20mayor%20practicidad.
-		Muchas%20gracias.
-		Cordiales%20saludos.""".format(partner_name, amount_total, partner_email) 
+		debtor = self.env["notify.debtor"].search([("id","=",self.env.context.get("parent_id"))])
+		message = debtor.template_id.text
+		if partner_email == False:
+			raise ValidationError("El campo email se encuentra vacio")
+		else:
+			message = message.replace("partner",partner_name).replace("amount_total",str(amount_total)).replace("email",partner_email).replace(" ","%20") 
 		return message
 
 	def _get_telphone(self):
@@ -156,14 +169,14 @@ class NotifyDebtorPartner(models.Model):
 			raise ValidationError("La cantidad de digitos no es correcto.")
 		else:
 			prefix = self._get_prefix(self.partner_id.city)
-			mobile = prefix +  mobile.strip()[-7:]
+			mobile = prefix +  mobile.strip()[-6:]
 		return mobile.replace("-","")
 
 
 	def _get_prefix(self,city):
 		result = self.env["city.prefix"].search([('name', '=', city),])
 		if result:
-			return "%s%s" %((self.partner_id.country_id.phone_code), result.prefix)
+			return "%s9%s" %((self.partner_id.country_id.phone_code), result.prefix)
 		else:
 			raise ValidationError("No existe prefijo para esta ciudad.")
 

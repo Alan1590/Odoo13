@@ -23,5 +23,6 @@
         'views/notify_debtor_partner_view.xml',
         'views/city_prefix_view.xml',
         'views/notify_debtor_wizard.xml',
+        'views/template_view.xml',
     ],
 }

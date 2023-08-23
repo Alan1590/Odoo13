@@ -1,0 +1,44 @@
+<odoo>
+
+    <act_window id="action_template_menu"  
+        name="Template"  
+        res_model="notify.debtor.template"
+        view_mode="form" />  
+
+    <menuitem id="menu_item_template" name="Templates" parent="menu_item_notifications"
+                  action="action_template_menu" sequence="2" groups="base.group_user"   />
+
+    <record id="notify_debtor_template_form" model="ir.ui.view">
+            <field name="name">notify.debtor.template.form</field>
+            <field name="model">notify.debtor.template</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <group>                
+                            <field name="name"/>
+                            <field name="text"/>                            
+                        </group>
+                    <footer>
+                            <div colspan="12">
+                            <b>NOTA:</b> Los campos disponibles para utilizar y que son de uso obligatorio son: 
+                                <i>partner_name</i>, <i>amount_total</i> y <i>partner_email</i>
+                            </div>                        
+                    </footer>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    <record id="notify_debtor_template_tree" model="ir.ui.view">
+    <field name="name">notify.debtor.template.tree</field>
+    <field name="model">notify.debtor.template</field>
+        <field name="arch" type="xml">
+            <tree editable="top"> 
+                <field name="name"/>
+                <field name="text"/>
+            </tree>                
+        </field>
+    </record>
+
+</odoo>

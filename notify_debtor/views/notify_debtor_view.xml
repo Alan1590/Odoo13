@@ -24,6 +24,7 @@
             <sheet>
                     <group>                
                         <field name="name" colspan="12"/>
+                        <field name="template_id" colspan="12"/>
                         <field name="init_date" colspan="12"/>
                         <field name="end_date" colspan="12"/>
                     </group>

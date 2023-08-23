@@ -16,6 +16,7 @@
 					</group>
                         <field name="notified_ids" context="{'parent_id':active_id}">
                         	<tree>
+                        		<field name="write_uid" readonly="1"/>
                         		<field name="create_date"/>
                         		<field name="name"/>
                         	</tree>
