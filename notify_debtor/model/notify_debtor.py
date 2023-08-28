@@ -14,7 +14,7 @@ class NotifyDebtor(models.Model):
 	init_date = fields.Date("Fecha inicio",required=True)
 	end_date = fields.Date("Fecha final",required=True)
 	notify_debtor_partner_ids = fields.Many2many("notify.debtor.partner",readonly=True)
-	template_id = fields.Many2one("notify.debtor.template")
+	template_id = fields.Many2one("notify.debtor.template",required=True)
 
 	state = fields.Selection ([
 			('new','Nuevo'),
@@ -152,7 +152,7 @@ class NotifyDebtorPartner(models.Model):
 		if partner_email == False:
 			raise ValidationError("El campo email se encuentra vacio")
 		else:
-			message = message.replace("partner",partner_name).replace("amount_total",str(amount_total)).replace("email",partner_email).replace(" ","%20") 
+			message = message.replace("partner",partner_name).replace("amount_total",str(amount_total)).replace("email",partner_email).replace(" ","%20").replace("\n","%0A") 
 		return message
 
 	def _get_telphone(self):

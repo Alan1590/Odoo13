@@ -21,7 +21,7 @@
                     <footer>
                             <div colspan="12">
                             <b>NOTA:</b> Los campos disponibles para utilizar y que son de uso obligatorio son: 
-                                <i>partner_name</i>, <i>amount_total</i> y <i>partner_email</i>
+                                <i>partner</i>, <i>amount_total</i> y <i>email</i>
                             </div>                        
                     </footer>
 
