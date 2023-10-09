@@ -1,0 +1,18 @@
+ <odoo>
+    <record id="first_data_response_view_tree" model="ir.ui.view">
+    <field name="name">first.data.response.tree</field>
+    <field name="model">first.data.response</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add All Fields You Want In The List Here -->
+                <field name="invoice_id" string="Invoice"/>
+                <field name="receipt_id" string="Receipt"/>
+                <field name="amount" string="Amount responsed"/>
+                <field name="state_payment" string="State of payment"/>
+                <field name="details" string="Details"/>
+
+            </tree>
+        </field>
+    </record>
+
+</odoo>

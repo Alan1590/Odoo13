@@ -1,0 +1,22 @@
+<odoo>
+
+    <act_window id="action_firt_data_code_response"  
+        name="First Data Code Response"  
+        res_model="first.data.code.response"
+        view_mode="tree,form"  />  
+
+    <menuitem id="menu_item_first_data_code_response" name="" parent="menu_item_first_data_parent"
+                  action="action_firt_data_code_response" sequence="2" groups="base.group_user"   />
+
+    <record id="first_data_code_response_tree" model="ir.ui.view">
+    <field name="name">first.data.code.response.tree</field>
+    <field name="model">first.data.code.response</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+            	<field name="name"/>
+            	<field name="description"/>
+            </tree>                
+        </field>
+    </record>
+
+</odoo>

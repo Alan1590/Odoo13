@@ -1,0 +1,15 @@
+ <odoo>
+
+    <record id="account_move_extension_form" model="ir.ui.view">
+        <field name="name">account.move</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <!-- find field description and add the field
+                 idea_ids after it -->
+            <xpath expr="//field[@name='ref']" position="after">
+              <field name="type_payment_id" string="Type of payment" />
+            </xpath>
+        </field>
+    </record>
+</odoo>

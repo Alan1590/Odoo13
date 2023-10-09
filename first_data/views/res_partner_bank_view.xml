@@ -1,0 +1,24 @@
+ <odoo>
+
+    <record id="res_partner_bank_extension_form" model="ir.ui.view">
+        <field name="name">res.partner.bank</field>
+        <field name="model">res.partner.bank</field>
+        <field name="inherit_id" ref="base.view_partner_bank_form"/>
+        <field name="arch" type="xml">
+            <!-- find field description and add the field
+                 idea_ids after it -->
+            <xpath expr="/form/*" position="before">
+                <header>
+                    <button name="check_duplication" string="Check duplications" type="object"/>
+                </header>
+            </xpath>            
+            <xpath expr="//field[@name='acc_number']" position="before">
+              <field name="type_of_debit" string="Type of debit" />
+            </xpath>
+
+        </field>
+
+
+    </record>
+
+</odoo>

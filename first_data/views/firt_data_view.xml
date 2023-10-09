@@ -1,0 +1,86 @@
+ <odoo>
+        <act_window id="action_firt_data_menu"  
+        name="First Data"  
+        res_model="first.data"
+        view_mode="tree,form"  />  
+
+    <menuitem id="menu_item_first_data_parent" name="First Data" parent="account.menu_finance"
+                sequence="3" groups="base.group_user"/>
+    <menuitem id="menu_item_first_data" name="First Data" parent="menu_item_first_data_parent"
+                  action="action_firt_data_menu" sequence="99" groups="base.group_user"/>
+
+    <record id="first_data_view_form" model="ir.ui.view">
+        <field name="name">first.data.form</field>
+        <field name="model">first.data</field>
+        <field name="arch" type="xml">
+                <form string="">
+                    <header>
+                        <button name="fill_invoices" string="Fill invoices" states='draft' type="object"/>
+                        <button name="generate_line_debits" string="Generate" states='draft' type="object" class="oe_highlight"/>
+                        <button name="process_response" string="Process Response" states='open' type='object' class="oe_highlight"/>
+                        <button name="validate_response" string="Validate Response" states='wait_validation' type='object' class="oe_highlight"/>                      
+                        <button name="reject_response" string="Reject Response" states='wait_validation' type='object' class="oe_highlight"/>                                              
+                        <button name="cancel" string="Cancel" type='object' states='open'/>              
+                        <field name="state" widget="statusbar" statusbar_visible='draft,open,wait_validation,validate'/>
+                    </header>
+
+                    <sheet>
+                            <group>
+                                <field name="name" colspan="12"/>
+                                <field name="number_company" colspan="12"/>
+                                <field name="type_register" invisible="1"/>
+                                <field name="presentation_date" />
+                                <field name="expired_date" />
+                                <field name="include_partner" />
+                                <field name="filters"/>
+                                <field name="filters_journal_id"/>
+                                <field name="number_debits" />
+                                <field name="amount_debits" />
+                            </group>
+                            <notebook>
+                                <page string="List invoices">
+                                    <field name="list_invoices" widget="many2many" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}">
+                                        <tree>
+                                          <field name="invoice_date" string="Fecha factura"/>
+                                          <field name="name" />
+                                          <field name="partner_id" string="Cliente" widget="res_partner_many2one"/>
+                                          <field name="amount_residual" />
+                                          <field name="amount_total" />
+                                          <field name="state" />
+                                        </tree>
+                                    </field>
+                                </page>
+                                <page string="Request" >
+                                    <field name="send_result" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
+                                </page>
+                                <page string="Response" attrs="{'readonly': [ ('state', 'not in', ['open','wait_validation'])]}">
+                                    <group colspan="12" col="2">
+                                        <field name="journal_id" string="Journal" attrs="{'readonly': [ ('state', 'not in', ['wait_validation'])]}" col="12"/>
+                                        <field name="get_response" attrs="{'readonly': [ ('state', 'in', ['posted'])]}"/>
+                                    </group>                                        
+                                </page>
+                                <page string="Result Response" attrs="{'readonly': [ ('state', 'not in', ['open','wait_validation'])]}">
+                                    <group colspan="12" col="2">
+                                        <field name="procesed_response"/>
+                                    </group>                                        
+                                </page>
+                            </notebook>
+                    </sheet>
+                </form> 
+        </field>
+    </record>
+
+    <record id="first_data_view_tree" model="ir.ui.view">
+    <field name="name">first.data.tree</field>
+    <field name="model">first.data</field>
+        <field name="arch" type="xml">
+            <tree>
+                <!-- Add All Fields You Want In The List Here -->
+                <field name="presentation_date"/>
+                <field name="number_debits"/>
+                <field name="amount_debits"/>
+            </tree>
+        </field>
+    </record>
+
+</odoo>

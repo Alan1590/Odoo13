@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_first_data,access_first_data,model_first_data,base.group_no_one,1,1,1,0
+access_first_data_response,access_first_data_response,model_first_data_response,base.group_no_one,1,1,1,1
+access_first_data_code_response,access_first_data_code_response,model_first_data_code_response,base.group_no_one,1,1,1,0
+access_account_move_extension,access_account_move_extension,model_account_move_extension,base.group_no_one,1,1,1,0
