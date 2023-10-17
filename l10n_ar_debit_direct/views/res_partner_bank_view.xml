@@ -1,0 +1,14 @@
+<odoo>
+	<record id="res_partner_bank_direct_debit_form" model="ir.ui.view">
+		<field name="name">res_partner_bank_direct_debit.form</field>
+		<field name="model">res.partner.bank</field>
+		<field name="inherit_id" ref="base.view_partner_bank_form"/>
+		<field name="arch" type="xml">
+			<xpath expr="//field[@name='partner_id']" position="after">
+						<field name="is_for_direct_debit" />
+						<field name="type_of_account" colspan="12"/>
+						<field name="debit_owner_id" colspan="12" attrs="{'required': [('is_for_direct_debit','=', True)]}"/>
+			</xpath>
+		</field>
+    </record>
+</odoo>

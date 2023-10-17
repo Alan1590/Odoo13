@@ -1,0 +1,66 @@
+<odoo>
+	<act_window id="action_direct_debit_menu"
+	name="Direct debit"
+	res_model="direct.debit"
+	view_mode="tree,form"  />
+
+<menuitem id="menu_item_direct_debit" name="Direct debit" parent="account.menu_finance_receivables"
+			  action="action_direct_debit_menu" sequence="99" groups="base.group_user"/>
+<record id="direct_debit_form" model="ir.ui.view">
+	<field name="name">direct.debit.form</field>
+	<field name="model">direct.debit</field>
+	<field name="arch" type="xml">
+			<form string="">
+				<header>
+					<button name="fill_invoices" states='draft' string="Get invoices" type="object"/>
+					<button name="generate_debits_lines" string="Generate" states='draft' type="object" class="oe_highlight"/>
+					<button name="process_response" string="Process Response" states='open' type='object' class="oe_highlight"/>
+					<button name="validate_response" string="Validate Response" states='wait_validation' type='object' class="oe_highlight"/>    
+					<button name="reject_response" string="Reject Response" states='wait_validation' type='object' class="oe_highlight"/>
+					<button name="cancel" string="Cancel" type='object' states='open'/>              
+					<field name="state" widget="statusbar" statusbar_visible='draft,open,wait_validation,validate'/>
+
+				</header>
+				<group>
+					<field name="name" colspan="12"/>
+					<field name="cabecera_id" colspan="12"/>
+					<field name="date_debit" colspan="12"/>
+					<field name="file" string="File" colspan="12"/>
+					<field name="number_debits" colspan="12"/>
+					<field name="amount_total" colspan="12"/>
+				</group>
+				<notebook>
+					<page string="Facturas">
+                        <field name="invoice_ids" widget="many2many" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}">
+                            <tree>
+                              <field name="invoice_date" string="Fecha factura"/>
+                              <field name="name" />
+                              <field name="partner_id" string="Cliente" widget="res_partner_many2one"/>
+                              <field name="amount_residual" />
+                              <field name="amount_total" />
+                              <field name="state" />
+                            </tree>
+                        </field>						
+					</page>
+					<page string="Resultado">
+						<field name="result" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
+					</page>
+				</notebook>
+			</form>
+	</field>
+</record>
+
+<record id="direct_debit_tree" model="ir.ui.view">
+<field name="name">direct.debit.tree</field>
+<field name="model">direct.debit</field>
+	<field name="arch" type="xml">
+		<tree>
+			<field name="name" colspan="12"/>
+			<field name="date_debit" colspan="12"/>
+			<field name="number_debits" colspan="12"/>
+			<field name="amount_total" colspan="12"/>
+		</tree>
+	</field>
+</record>
+
+</odoo>
