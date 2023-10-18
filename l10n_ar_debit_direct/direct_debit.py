@@ -29,7 +29,7 @@ class DirectDebit(models.Model):
 		('draft','Draft'),
 		('open','Open'),
 		('responsed','Responsed'),
-		('wait_validation','Wait validation'),			
+		('wait_response','Wait response'),			
 		('posted','Posted'),
 		],default='draft')
 
@@ -64,7 +64,8 @@ class DirectDebit(models.Model):
 			f.write(self.result)
 			f.close()
 			self.file = base64.b64encode(self.result.encode())
-		
+		self.state = 'wait_response'
+
 	def _generate_header(self):
 		cabecera = self.cabecera_id
 		header = ("%s%s%s%s%s%s%s%s%s%s%s") %(
@@ -123,11 +124,13 @@ class DirectDebit(models.Model):
 	def fill_invoices(self):
 		invoices_ids = self._get_invoices()
 		self.invoice_ids = invoices_ids
+		self.state = 'open'
 
 	def _get_invoices(self):
+		partner_bank = self.env['res.partner.bank'].search([("is_for_direct_debit","=",True)])
 		invoice = self.env['account.move'].search([('&'),('state','=','posted'),
 				('type','=','out_invoice'),
-				('invoice_payment_state', '!=', 'paid')])
+				('invoice_payment_state', '!=', 'paid'),("partner_id","in",partner_bank.partner_id.ids)])
 		return invoice	
 
 	def _validation_fields(self, invoice_ids):
