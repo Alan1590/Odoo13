@@ -10,7 +10,6 @@ import logging
 import base64
 import datetime
 _logger = logging.getLogger(__name__)
-#from hikvisionapi import Client
 
 class DirectDebit(models.Model):
 	_name = "direct.debit"
@@ -23,6 +22,8 @@ class DirectDebit(models.Model):
 	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit')  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
+	response = fields.Text("Respuesta")
+	payments_ids = field.Many2many("direct.debit.response.result")
 	file = fields.Binary(string="Resultado",readonly=True)
 
 	state = fields.Selection ([
@@ -37,6 +38,9 @@ class DirectDebit(models.Model):
 		domain=[('&'),('state','=','posted'),
 				('type','=','out_invoice'),
 				('invoice_payment_state', '!=', 'paid')])
+
+	def cancel(self):
+		self.state = "draft"
 
 	def _compute_amount_total(self):
 		total = 0
@@ -99,7 +103,7 @@ class DirectDebit(models.Model):
 			partner_bank = self._get_partner_bank(invoices.partner_id)
 			sistema = type_account[partner_bank.type_of_account]
 			partner_name = partner_bank.debit_owner_id.name.replace(" ","")[:16].ljust(16).upper()
-			ref_uniq = invoices.name.replace("-","").replace("/","")
+			ref_uniq = str(invoices.id)
 			str_result += ("%s%s%s%s%s%s%s%s%s%s%s%s%s%s" %(
 				sistema,
 				res_nbsf,
@@ -141,6 +145,131 @@ class DirectDebit(models.Model):
 			elif len(partner_bank.acc_number) < 22:
 				raise ValidationError("El cliente %s posee un cbu no valido (22 digitos)" %invoice.partner_id.name)
 		return True
+
+	def process_response(self):
+		if not self.response:
+			raise ValidationError("Campo de respuesta vacio")
+		else:
+			try:
+				response = self.response.split("\n")
+				cabecera = self._procces_cabecera(response[0])
+				datos = self._procesar_registros(response[1])
+				self._procesar_pagos(datos)
+
+			except Exception as e:
+				raise ValidationError(e)
+
+	def _procesar_pagos(self,resultado):
+		for pago in resultado:
+			invoice = self._get_invoices(pago['r_referencia'])
+			self.env["direct.debit.response.result"].create({
+				'invoice_id':invoice.id,
+				'debit_id':self.id,
+				'receipt_id':pago['r_referencia'],
+				'partner_id':invoice.partner_id,
+				'amount':pago['r_importe'],
+				})
+		self.state = 'wait_validation'
+
+	def validate_response(self):
+		for item in self.payments_ids:
+			inv_id = self.__get_invoice_from_move_line(item.invoice_id.id,
+					item.invoice_id.name).id
+			if item.state == '0000':
+				vals = {
+				'to_pay_move_line_ids': [(6,0,[inv_id])],
+				'partner_id':item.invoice_id.partner_id.id,
+				'notes':'Payment from direct debit',
+				'partner_type':'customer',
+				'company_id':1,
+				}
+				id_receipt = self.env['account.payment.group'].create(vals)
+				self.__create_payment(item.amount,id_receipt)
+				self.payments_ids = [(1,item.id,{'receipt_id':id_receipt})]
+		self.state = 'posted'
+
+	def __get_invoice_from_move_line(self,id_invoice,inv_name):
+		search_value = self._get_to_pay_move_lines_domain(id_invoice)
+		vals = self.env['account.move.line'].search(search_value)
+		if vals == False:
+			raise Warning("Te invoice with id %s is already paid" %inv_name)
+		else:
+			return vals		
+
+	def _get_to_pay_move_lines_domain(self,move_id):
+	        self.ensure_one()
+	        return [
+	            ('move_id', '=',
+	                move_id),
+	        ('account_id.reconcile', '=', True),
+            ('move_id.type', 'in', ['out_invoice']),
+            ('reconciled', '=', False),
+            ('full_reconcile_id', '=', False),
+#            ('company_id', '=', 1),
+#            ('company_id', '=', 1),
+	        ]
+
+	def __create_payment(self,amount,id_receipt):
+		vals = {
+		'payment_group_id': id_receipt.id,
+		'payment_type':'inbound',
+		'payment_method_id':2,
+		'journal_id': self.journal_id.id,
+		'amount':amount,
+		'partner_type':'customer'
+		}
+		self.env['account.payment'].create(vals)
+		return vals
+
+	def _get_data_invoice(self,id_invoice):
+		invoice = self.env['account.move'].search([('id','=',id_invoice)])
+		return invoice
+
+	def _procces_cabecera(self,cabecera):
+		try:
+			r_cabecera = {
+			'c_cabecera': cabecera[0:3],
+			'c_empresa': cabecera[4:7],
+			'c_convenio': cabecera[8:11],
+			'c_fecha_respuesta': cabecera[12:21],
+			'c_n_archivo': cabecera[22:27],
+			'c_total': cabecera[28:41],
+			'c_n_registros': cabecera[42:47],
+			'c_observacion': cabecera[48:],
+			}
+		except Exception as e:
+			raise ValidationError(e)
+		return 
+
+	def _procesar_registros(self,registros):
+		l_reg = []
+		for reg in registros.split("\n"):
+			l_reg.append({
+			'r_registro': registros[0:1],
+			'r_reservado': registros[2:5],
+			'r_cbu': registros[6:27],
+			'r_cod_operacion': registros[28:29],
+			'r_importe': registros[29:42],
+			'r_fecha_imputacion': registros[43:50],
+			'r_n_comprobante': registros[51:60],
+			'r_cuit_cuil_dni': registros[61:71],
+			'r_den_cuenta': registros[72:87],
+			'r_referencia': registros[88:102],
+			'r_reverso': registros[103:103],
+			'r_trace_original': registros[104:118],
+			'r_dest_debito': registros[119:120],
+			'r_cod_rechazo': registros[121:123],
+			'r_desc_rechazo': registros[124:153],
+			'r_trace': registros[154:168],
+			'r_trace_camara': registros[169:183],
+			'r_fecha_real_imputacion': registros[184:191],
+			'r_empresa': registros[192:195],
+			'r_convenio': registros[196:199],
+			'r_fecha_archivo': registros[200:207],
+			'r_n_archivo': registros[208:213],
+			'r_observacion': registros[214:],
+			})
+		return l_reg
 
 
 class DirectDebitCabecera(models.Model):
