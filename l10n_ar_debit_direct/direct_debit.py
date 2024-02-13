@@ -18,12 +18,13 @@ class DirectDebit(models.Model):
 	name = fields.Char("Name",size=256, required=True)
 	cabecera_id = fields.Many2one('direct.debit.cabecera')
 	date_debit = fields.Date("Fecha debito",required=True)
+	real_date_debit = fields.Date("Fecha debito cliente",required=True)
 	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total')    
 	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit')  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
 	response = fields.Text("Respuesta")
-	payments_ids = field.Many2many("direct.debit.response.result")
+	payments_ids = fields.Many2many("direct.debit.response.result")
 	file = fields.Binary(string="Resultado",readonly=True)
 
 	state = fields.Selection ([
@@ -56,7 +57,7 @@ class DirectDebit(models.Model):
 			n_debit = len(self.invoice_ids)
 			item.number_debits = n_debit
 		return n_debit
-	
+
 	def generate_debits_lines(self):
 		path = str(pathlib.Path(__file__).parent.absolute())
 		name_file = path+"/debit_files/%s.txt" %self.date_debit
@@ -96,7 +97,6 @@ class DirectDebit(models.Model):
 		trace_original = "".ljust(15)
 		uso_interno = "".ljust(105)
 		str_result = ""
-		fecha_debito = self.date_debit + datetime.timedelta(days=3)
 		for invoices in self.invoice_ids:
 			amount_invoice = str(('%.3f')%(float(invoices.amount_residual))).replace(".","").zfill(14)
 			nro_comprobante = str(invoices.id).zfill(10)
@@ -110,7 +110,7 @@ class DirectDebit(models.Model):
 				str(partner_bank.acc_number).zfill(22),
 				cod_oper,
 				amount_invoice,
-				fecha_debito.strftime("%Y%m%d"),
+				self.real_date_debit.strftime("%Y%m%d"),
 				str(invoices.partner_id.id).zfill(10),
 				str(dest_cbu).zfill(11),
 				partner_name,
@@ -138,6 +138,11 @@ class DirectDebit(models.Model):
 		return invoice	
 
 	def _validation_fields(self, invoice_ids):
+		diferences = self.real_date_debit - self.date_debit 
+		if diferences.days < 3:
+			raise ValidationError("La diferencia entre fecha debe ser minimo 3 dias")
+		elif self.real_date_debit.isoweekday() == 6 or self.real_date_debit.isoweekday() == 7:
+			raise ValidationError("La fecha de debito no puede ser en fin de semana")
 		for invoice in invoice_ids:
 			partner_bank = self._get_partner_bank(invoice.partner_id)
 			if not partner_bank:

@@ -21,7 +21,8 @@
 				<group >
 					<field name="name" colspan="12" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
 					<field name="cabecera_id" colspan="12" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
-					<field name="date_debit" colspan="12" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
+					<field name="date_debit" colspan="12" attrs="{'readonly': [ ('state', 'not in', ['draft','open'])]}"/>
+					<field name="real_date_debit" colspan="12" attrs="{'readonly': [ ('state', 'not in', ['draft','open'])]}"/>
 					<field name="file" string="File" colspan="12"/>
 					<field name="number_debits" colspan="12"/>
 					<field name="amount_total" colspan="12"/>
