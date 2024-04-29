@@ -125,12 +125,17 @@ class DirectDebit(models.Model):
 		partner_bank = self.env['res.partner.bank'].search([("&"),("partner_id","=",partner_id.id),("is_for_direct_debit","=",True)])
 		return partner_bank
 
+	def _get_invoice(self,invoice_id):
+		invoice = self.env['account.move'].search([("id","=",invoice_id)])
+		return invoice
+
+
 	def fill_invoices(self):
-		invoices_ids = self._get_invoices()
+		invoices_ids = self._get_all_invoices()
 		self.invoice_ids = invoices_ids
 		self.state = 'open'
 
-	def _get_invoices(self):
+	def _get_all_invoices(self):
 		partner_bank = self.env['res.partner.bank'].search([("is_for_direct_debit","=",True)])
 		invoice = self.env['account.move'].search([('&'),('state','=','posted'),
 				('type','=','out_invoice'),
@@ -166,7 +171,7 @@ class DirectDebit(models.Model):
 
 	def _procesar_pagos(self,resultado):
 		for pago in resultado:
-			invoice = self._get_invoices(pago['r_referencia'])
+			invoice = self._get_invoice(pago['r_referencia'])
 			self.env["direct.debit.response.result"].create({
 				'invoice_id':invoice.id,
 				'debit_id':self.id,
