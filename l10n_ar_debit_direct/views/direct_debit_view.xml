@@ -45,6 +45,8 @@
 					</page>
 					<page string="Respuesta">
 						<field name="response" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
+						<field name="payments_ids" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
+
 					</page>
 
 				</notebook>

@@ -32,6 +32,7 @@ class DirectDebit(models.Model):
 		('open','Open'),
 		('responsed','Responsed'),
 		('wait_response','Wait response'),			
+		('wait_validation','Wait Validation'),			
 		('posted','Posted'),
 		],default='draft')
 
@@ -163,7 +164,7 @@ class DirectDebit(models.Model):
 			try:
 				response = self.response.split("\n")
 				cabecera = self._procces_cabecera(response[0])
-				datos = self._procesar_registros(response[1])
+				datos = self._procesar_registros(response[1:])
 				self._procesar_pagos(datos)
 
 			except Exception as e:
@@ -172,13 +173,13 @@ class DirectDebit(models.Model):
 	def _procesar_pagos(self,resultado):
 		for pago in resultado:
 			invoice = self._get_invoice(pago['r_referencia'])
-			self.env["direct.debit.response.result"].create({
-				'invoice_id':invoice.id,
+			id_response = self.env["direct.debit.response.result"].create({
 				'debit_id':self.id,
-				'receipt_id':pago['r_referencia'],
-				'partner_id':invoice.partner_id,
+				'invoice_id':invoice.id,
+				'partner_id':invoice.partner_id.id,
 				'amount':pago['r_importe'],
 				})
+			self.payments_ids = [(4,id_response.id)]
 		self.state = 'wait_validation'
 
 	def validate_response(self):
@@ -207,17 +208,17 @@ class DirectDebit(models.Model):
 			return vals		
 
 	def _get_to_pay_move_lines_domain(self,move_id):
-	        self.ensure_one()
-	        return [
-	            ('move_id', '=',
-	                move_id),
-	        ('account_id.reconcile', '=', True),
-            ('move_id.type', 'in', ['out_invoice']),
-            ('reconciled', '=', False),
-            ('full_reconcile_id', '=', False),
+			self.ensure_one()
+			return [
+				('move_id', '=',
+					move_id),
+			('account_id.reconcile', '=', True),
+			('move_id.type', 'in', ['out_invoice']),
+			('reconciled', '=', False),
+			('full_reconcile_id', '=', False),
 #            ('company_id', '=', 1),
 #            ('company_id', '=', 1),
-	        ]
+			]
 
 	def __create_payment(self,amount,id_receipt):
 		vals = {
@@ -256,31 +257,30 @@ class DirectDebit(models.Model):
 		for reg in registros.split("\n"):
 			l_reg.append({
 			'r_registro': registros[0:1],
-			'r_reservado': registros[2:5],
-			'r_cbu': registros[6:27],
-			'r_cod_operacion': registros[28:29],
+			'r_reservado': registros[2:4],
+			'r_cbu': registros[5:26],
+			'r_cod_operacion': registros[27:28],
 			'r_importe': registros[29:42],
-			'r_fecha_imputacion': registros[43:50],
-			'r_n_comprobante': registros[51:60],
-			'r_cuit_cuil_dni': registros[61:71],
-			'r_den_cuenta': registros[72:87],
-			'r_referencia': registros[88:102],
-			'r_reverso': registros[103:103],
-			'r_trace_original': registros[104:118],
-			'r_dest_debito': registros[119:120],
-			'r_cod_rechazo': registros[121:123],
-			'r_desc_rechazo': registros[124:153],
-			'r_trace': registros[154:168],
-			'r_trace_camara': registros[169:183],
-			'r_fecha_real_imputacion': registros[184:191],
-			'r_empresa': registros[192:195],
-			'r_convenio': registros[196:199],
-			'r_fecha_archivo': registros[200:207],
-			'r_n_archivo': registros[208:213],
-			'r_observacion': registros[214:],
+			'r_fecha_imputacion': registros[43:49],
+			'r_n_comprobante': registros[50:59],
+			'r_cuit_cuil_dni': registros[60:70],
+			'r_den_cuenta': registros[71:86],
+			'r_referencia': registros[89:101],
+			'r_reverso': registros[102:102],
+			'r_trace_original': registros[103:117],
+			'r_dest_debito': registros[118:119],
+			'r_cod_rechazo': registros[120:122],
+			'r_desc_rechazo': registros[123:152],
+			'r_trace': registros[153:167],
+			'r_trace_camara': registros[168:182],
+			'r_fecha_real_imputacion': registros[183:190],
+			'r_empresa': registros[191:194],
+			'r_convenio': registros[195:198],
+			'r_fecha_archivo': registros[199:206],
+			'r_n_archivo': registros[207:212],
+			'r_observacion': registros[213:],
 			})
 		return l_reg
-
 
 class DirectDebitCabecera(models.Model):
 	_name = "direct.debit.cabecera"

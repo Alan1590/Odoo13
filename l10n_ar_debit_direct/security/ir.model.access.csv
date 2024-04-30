@@ -1,5 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_direct_debit,access_direct_debit,model_direct_debit,base.group_no_one,1,1,1,1
-access_direct_debit_response,access_direct_debit,model_direct_debit,base.group_no_one,1,1,1,1
+access_direct_debit_response,access_direct_debit_response,model_direct_debit,base.group_no_one,1,1,1,1
 access_res_partner_bank,access_res_partner_bank,model_res_partner_bank,base.group_no_one,1,1,1,0
 access_direct_debit_cabecera,access_direct_debit_cabecera,model_direct_debit_cabecera,base.group_no_one,1,1,1,1
