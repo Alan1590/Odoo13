@@ -164,7 +164,7 @@ class DirectDebit(models.Model):
 			try:
 				response = self.response.split("\n")
 				cabecera = self._procces_cabecera(response[0])
-				datos = self._procesar_registros(response[1])
+				datos = self._procesar_registros(response[1:])
 				raise ValidationError(datos)
 				self._procesar_pagos(datos)
 
