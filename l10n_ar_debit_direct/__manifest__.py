@@ -24,6 +24,7 @@
         'security/ir.model.access.csv',
         'views/res_partner_bank_view.xml',
         'views/direct_debit_view.xml',
+        'views/direct_debit_response_result_view.xml',        
         'views/direct_debit_cabecera_view.xml',
 
     ],

@@ -1,0 +1,17 @@
+<odoo>
+
+<record id="direct_debit_response_tree" model="ir.ui.view">
+<field name="name">direct.debit.response.result.tree</field>
+<field name="model">direct.debit.response.result</field>
+	<field name="arch" type="xml">
+		<tree>
+			<field name="invoice_id" colspan="12"/>
+			<field name="debit_id" colspan="12"/>
+			<field name="partner_id" colspan="12"/>
+			<field name="amount" colspan="12"/>
+			<field name="state" colspan="12"/>
+		</tree>
+	</field>
+</record>
+
+</odoo>

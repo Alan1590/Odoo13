@@ -177,7 +177,7 @@ class DirectDebit(models.Model):
 				'debit_id':self.id,
 				'invoice_id':invoice.id,
 				'partner_id':invoice.partner_id.id,
-				'amount':pago['r_importe'],
+				'amount':invoice['r_importe'],
 				})
 			self.payments_ids = [(4,id_response.id)]
 		self.state = 'wait_validation'
