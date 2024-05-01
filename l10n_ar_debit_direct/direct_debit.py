@@ -255,14 +255,15 @@ class DirectDebit(models.Model):
 
 	def _procesar_registros(self,registros):
 		l_reg = []
-		for reg in registros.split("\n"):
+		for reg in registros:
 			reg.replace(" ","")
+			raise ValidationError(reg)
 			l_reg.append({
-			'r_registro': reg[0:1],
-			'r_reservado': reg[2:4],
-			'r_cbu': reg[5:26],
-			'r_cod_operacion': reg[27:28],
-			'r_importe': reg[29:42],
+			'r_registro': reg[0:2],
+			'r_reservado': reg[3:7],
+			'r_cbu': reg[8:30],
+			'r_cod_operacion': reg[31:33],
+			'r_importe': reg[34:48],
 			'r_fecha_imputacion': reg[43:49],
 			'r_n_comprobante': reg[50:59],
 			'r_cuit_cuil_dni': reg[60:70],
