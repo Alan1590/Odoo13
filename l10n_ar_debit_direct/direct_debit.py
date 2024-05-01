@@ -164,7 +164,8 @@ class DirectDebit(models.Model):
 			try:
 				response = self.response.split("\n")
 				cabecera = self._procces_cabecera(response[0])
-				datos = self._procesar_registros(response[1:])
+				datos = self._procesar_registros(response[1])
+				raise ValidationError(datos)
 				self._procesar_pagos(datos)
 
 			except Exception as e:
@@ -177,7 +178,7 @@ class DirectDebit(models.Model):
 				'debit_id':self.id,
 				'invoice_id':invoice.id,
 				'partner_id':invoice.partner_id.id,
-				'amount':invoice['r_importe'],
+				'amount':pago['r_importe'],
 				})
 			self.payments_ids = [(4,id_response.id)]
 		self.state = 'wait_validation'
