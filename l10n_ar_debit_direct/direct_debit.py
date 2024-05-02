@@ -165,7 +165,7 @@ class DirectDebit(models.Model):
 				response = self.response.split("\n")
 				cabecera = self._procces_cabecera(response[0])
 				datos = self._procesar_registros(response[1:])
-				raise ValidationError(datos)
+				#raise ValidationError(datos)
 				self._procesar_pagos(datos)
 
 			except Exception as e:
@@ -178,7 +178,7 @@ class DirectDebit(models.Model):
 				'debit_id':self.id,
 				'invoice_id':invoice.id,
 				'partner_id':invoice.partner_id.id,
-				'amount':pago['r_importe'],
+				'amount':float(int(pago['r_importe'])),
 				})
 			self.payments_ids = [(4,id_response.id)]
 		self.state = 'wait_validation'
@@ -257,32 +257,32 @@ class DirectDebit(models.Model):
 		l_reg = []
 		for reg in registros:
 			reg.replace(" ","")
-			raise ValidationError(reg)
+			#raise ValidationError(reg)
 			l_reg.append({
-			'r_registro': reg[0:2],
-			'r_reservado': reg[3:7],
-			'r_cbu': reg[8:30],
-			'r_cod_operacion': reg[31:33],
-			'r_importe': reg[34:48],
-			'r_fecha_imputacion': reg[43:49],
-			'r_n_comprobante': reg[50:59],
-			'r_cuit_cuil_dni': reg[60:70],
-			'r_den_cuenta': reg[71:86],
-			'r_referencia': reg[89:101],
-			'r_reverso': reg[102:102],
-			'r_trace_original': reg[103:117],
-			'r_dest_debito': reg[118:119],
-			'r_cod_rechazo': reg[120:122],
-			'r_desc_rechazo': reg[123:152],
-			'r_trace': reg[153:167],
-			'r_trace_camara': reg[168:182],
-			'r_fecha_real_imputacion': reg[183:190],
-			'r_empresa': reg[191:194],
-			'r_convenio': reg[195:198],
-			'r_fecha_archivo': reg[199:206],
-			'r_n_archivo': reg[207:212],
-			'r_observacion': reg[213:],
-			})
+				'r_registro': reg[0:2],
+				'r_reservado': reg[3:7],
+				'r_cbu': reg[8:30],
+				'r_cod_operacion': reg[31:33],
+				'r_importe': reg[33:44],
+				'r_fecha_imputacion': reg[44:52],
+				'r_n_comprobante': reg[52:62],
+				'r_cuit_cuil_dni': reg[62:73],
+				'r_den_cuenta': reg[73:89],
+				'r_referencia': reg[89:104],
+				'r_reverso': reg[104:105],
+				'r_trace_original': reg[105:120],
+				'r_dest_debito': reg[120:122],
+				'r_cod_rechazo': reg[122:125],
+				'r_desc_rechazo': reg[125:155],
+				'r_trace': reg[155:170],
+				'r_trace_camara': reg[170:185],
+				'r_fecha_real_imputacion': reg[185:193],
+				'r_empresa': reg[193:197],
+				'r_convenio': reg[197:201],
+				'r_fecha_archivo': reg[201:209],
+				'r_n_archivo': reg[209:215],
+				'r_observacion': reg[215:],
+				})
 		return l_reg
 
 class DirectDebitCabecera(models.Model):
