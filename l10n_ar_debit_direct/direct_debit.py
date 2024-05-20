@@ -173,13 +173,12 @@ class DirectDebit(models.Model):
 
 	def _procesar_pagos(self,resultado):
 		for pago in resultado:
-			raise ValidationError('%.2f' % float(int(pago['r_importe'])))
 			invoice = self._get_invoice(pago['r_referencia'].replace(" ",""))
 			id_response = self.env["direct.debit.response.result"].create({
 				'debit_id':self.id,
 				'invoice_id':invoice.id,
 				'partner_id':invoice.partner_id.id,
-				'amount':'%.2f' % float(int(pago['r_importe'])),
+				'amount':invoice.amount_residual,
 				})
 			self.payments_ids = [(4,id_response.id)]
 		self.state = 'wait_validation'
