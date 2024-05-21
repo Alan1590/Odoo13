@@ -163,10 +163,13 @@ class DirectDebit(models.Model):
 		else:
 			try:
 				response = self.response.split("\n")
-				cabecera = self._procces_cabecera(response[0])
-				datos = self._procesar_registros(response[1:])
-				#raise ValidationError(datos)
-				self._procesar_pagos(datos)
+				if ("9997" in response[0]):					
+					cabecera = self._procces_cabecera(response[0])
+					datos = self._procesar_registros(response[1:])
+					#raise ValidationError(datos)
+					self._procesar_pagos(datos)
+				else:
+					raise ValidationError("Falta la cabecera en la respuesta")
 
 			except Exception as e:
 				raise ValidationError(e)
