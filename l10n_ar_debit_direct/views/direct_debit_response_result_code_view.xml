@@ -1,0 +1,19 @@
+<odoo>
+	<act_window id="action_direct_debit_response_menu"
+	name="Direct debit response"
+	res_model="direct.debit.response.result.code"
+	view_mode="tree,form"  />
+
+<menuitem id="menu_item_direct_debit_response_result_code" name="Direct debit response" parent="account.menu_item_direct_debit"
+			  action="action_direct_debit_response_menu" sequence="99" groups="base.group_user"/>
+    <record id="direct_debit_response_result_code_tree" model="ir.ui.view">
+    <field name="name">direct.debit.response.result.code.tree</field>
+    <field name="model">direct.debit.response.result.code</field>
+        <field name="arch" type="xml">
+            <tree editable="top">
+            	<field name="code"/>
+            	<field name="name"/>
+            </tree>                
+        </field>
+    </record>
+</odoo>

@@ -177,14 +177,19 @@ class DirectDebit(models.Model):
 	def _procesar_pagos(self,resultado):
 		for pago in resultado:
 			invoice = self._get_invoice(pago['r_referencia'].replace(" ",""))
-			id_response = self.env["direct.debit.response.result"].create({
-				'debit_id':self.id,
-				'invoice_id':invoice.id,
-				'partner_id':invoice.partner_id.id,
-				'amount':invoice.amount_residual,
-				})
-			self.payments_ids = [(4,id_response.id)]
-		self.state = 'wait_validation'
+			state_id = self._get_state_response(pago['r_cod_rechazo'])
+			if not state_id:
+				raise ValidationError("No se encontro el codigo de detalle %s" %pago['r_cod_rechazo'])
+			else:				
+				id_response = self.env["direct.debit.response.result"].create({
+					'debit_id':self.id,
+					'invoice_id':invoice.id,
+					'partner_id':invoice.partner_id.id,
+					'amount':invoice.amount_residual,
+					'state': state_id,
+					})
+				self.payments_ids = [(4,id_response.id)]
+			self.state = 'wait_validation'
 
 	def validate_response(self):
 		for item in self.payments_ids:
@@ -239,6 +244,10 @@ class DirectDebit(models.Model):
 	def _get_data_invoice(self,id_invoice):
 		invoice = self.env['account.move'].search([('id','=',id_invoice)])
 		return invoice
+
+	def _get_state_response(self,code):
+		state_payment = self.env['direct.debit.response.result.state'].search([('code','=',code)])
+		return state_payment.id
 
 	def _procces_cabecera(self,cabecera):
 		try:

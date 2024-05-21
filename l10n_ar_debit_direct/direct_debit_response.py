@@ -20,13 +20,13 @@ class DirectDebitResponseResult(models.Model):
 	receipt_id = fields.Many2one('account.payment.group','Receipt')
 	partner_id = fields.Many2one('res.partner','Partner')
 	amount = fields.Float('Amount')
-	state = fields.Many2one("direct.debit.response.result.state")
+	state = fields.Many2one("direct.debit.response.result.code")
 
 
 class DirectDebitResponseResultState(models.Model):
-	_name = "direct.debit.response.result.state"
+	_name = "direct.debit.response.result.code"
 	_inherit = 'mail.thread'
 
-	name = fields.Char("Respuesta", size=128, required=True)
 	code = fields.Char("Codigo", size=4, required=True)
+	name = fields.Char("Respuesta", size=128, required=True)
 
