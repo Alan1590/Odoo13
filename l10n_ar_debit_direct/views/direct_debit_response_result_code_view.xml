@@ -13,6 +13,7 @@
             <tree editable="top">
             	<field name="code"/>
             	<field name="name"/>
+            	<field name="is_valid"/>
             </tree>                
         </field>
     </record>

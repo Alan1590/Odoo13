@@ -26,7 +26,7 @@ class DirectDebit(models.Model):
 	response = fields.Text("Respuesta")
 	payments_ids = fields.Many2many("direct.debit.response.result")
 	file = fields.Binary(string="Resultado",readonly=True)
-
+	journal_id = fields.Many2one("account.journal",domain=[('|'),('type','=','cash'),('type','=','bank')])
 	state = fields.Selection ([
 		('draft','Draft'),
 		('open','Open'),
@@ -212,7 +212,7 @@ class DirectDebit(models.Model):
 		search_value = self._get_to_pay_move_lines_domain(id_invoice)
 		vals = self.env['account.move.line'].search(search_value)
 		if vals == False:
-			raise Warning("Te invoice with id %s is already paid" %inv_name)
+			raise Warning("The invoice with id %s is already paid" %inv_name)
 		else:
 			return vals		
 
