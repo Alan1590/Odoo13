@@ -29,4 +29,4 @@ class DirectDebitResponseResultState(models.Model):
 
 	code = fields.Char("Codigo", size=4, required=True)
 	name = fields.Char("Respuesta", size=128, required=True)
-
+	is_valid = fields.Boolean("Valido", help="Al tildar esta opcion se indica que el pago fue aceptado con este codigo")

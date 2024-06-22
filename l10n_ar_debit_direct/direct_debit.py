@@ -195,7 +195,7 @@ class DirectDebit(models.Model):
 		for item in self.payments_ids:
 			inv_id = self.__get_invoice_from_move_line(item.invoice_id.id,
 					item.invoice_id.name).id
-			if item.state == '0000':
+			if item.state.is_valid == True:
 				vals = {
 				'to_pay_move_line_ids': [(6,0,[inv_id])],
 				'partner_id':item.invoice_id.partner_id.id,
@@ -246,7 +246,7 @@ class DirectDebit(models.Model):
 		return invoice
 
 	def _get_state_response(self,code):
-		state_payment = self.env['direct.debit.response.result.state'].search([('code','=',code)])
+		state_payment = self.env['direct.debit.response.result.code'].search([('code','=',code)])
 		return state_payment.id
 
 	def _procces_cabecera(self,cabecera):
