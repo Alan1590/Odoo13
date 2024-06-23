@@ -19,8 +19,8 @@ class DirectDebit(models.Model):
 	cabecera_id = fields.Many2one('direct.debit.cabecera')
 	date_debit = fields.Date("Fecha debito",required=True)
 	real_date_debit = fields.Date("Fecha debito cliente",required=True)
-	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total')    
-	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit')  
+	amount_total = fields.Float("Total amount debit",readonly=True)    
+	number_debits = fields.Integer("Number of debit",readonly=True)  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
 	response = fields.Text("Respuesta")
@@ -40,20 +40,13 @@ class DirectDebit(models.Model):
 	def cancel(self):
 		self.state = "draft"
 
-	def _compute_amount_total(self):
-		total = 0
-		for item in self:
-			for inv in self.invoice_ids:
-				total += inv.amount_residual
-			item.amount_total = total
-		return 0
-
-	def _compute_number_debit(self):
-		n_debit = 0
-		for item in self:
-			n_debit = len(self.invoice_ids)
-			item.number_debits = n_debit
-		return n_debit
+	@api.onchange('invoice_ids')
+	def _get_cost_and_number_debit(self):
+		total_amount = 0
+		self.number_debits = len(self.list_invoices)
+		for item in self.invoice_ids:
+			total_amount += item.amount_residual
+		self.amount_total = total_amount
 
 	def generate_debits_lines(self):
 		path = str(pathlib.Path(__file__).parent.absolute())
