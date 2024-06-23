@@ -18,6 +18,7 @@
 					<button name="generate_debits_lines" string="Generate" states='open' type="object" class="oe_highlight"/>
 					<button name="process_response" string="Process Response" states='wait_response' type='object' class="oe_highlight"/>
 					<button name="validate_response" string="Validate Response" type='object' states='wait_validation' class="oe_highlight"/>					
+					<button name="reject_response" string="Reject Response" type='object' states='wait_validation' class="oe_highlight"/>					
 					<button name="cancel_response" string="Invalid Response" type='object' states='wait_response' class="oe_highlight"/>					
 					<button name="cancel" string="Cancel" type='object' states='open'/>              
 					<field name="state" widget="statusbar" statusbar_visible='draft,open,wait_response,wait_validation,validate'/>
@@ -49,7 +50,7 @@
 					</page>
 					<page string="Respuesta">
 						<field name="response" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
-						<field name="journal_id" attrs="{'required': [ ('state', 'in', ['wait_validation'])]}"/>
+						<field name="journal_id" attrs="{'required': [ ('state', 'in', ['wait_validation'])]}" col="12"/>
 						<field name="payments_ids" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
 
 					</page>

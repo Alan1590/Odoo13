@@ -26,7 +26,7 @@ class DirectDebit(models.Model):
 	response = fields.Text("Respuesta")
 	payments_ids = fields.Many2many("direct.debit.response.result")
 	file = fields.Binary(string="Resultado",readonly=True)
-	journal_id = fields.Many2one("account.journal",domain=[('|'),('type','=','cash'),('type','=','bank')])
+	journal_id = fields.Many2one(string="Diario", "account.journal",domain=[('|'),('type','=','cash'),('type','=','bank')])
 	state = fields.Selection ([
 		('draft','Draft'),
 		('open','Open'),
@@ -170,7 +170,6 @@ class DirectDebit(models.Model):
 					self._procesar_pagos(datos)
 				else:
 					raise ValidationError("Falta la cabecera en la respuesta")
-
 			except Exception as e:
 				raise ValidationError(e)
 
@@ -178,9 +177,10 @@ class DirectDebit(models.Model):
 		for pago in resultado:
 			invoice = self._get_invoice(pago['r_referencia'].replace(" ",""))
 			state_id = self._get_state_response(pago['r_cod_rechazo'])
+			amount = pago["r_importe"]
 			if not state_id:
 				raise ValidationError("No se encontro el codigo de detalle %s" %pago['r_cod_rechazo'])
-			else:				
+			else:
 				id_response = self.env["direct.debit.response.result"].create({
 					'debit_id':self.id,
 					'invoice_id':invoice.id,
@@ -207,6 +207,9 @@ class DirectDebit(models.Model):
 				self.__create_payment(item.amount,id_receipt)
 				self.payments_ids = [(1,item.id,{'receipt_id':id_receipt})]
 		self.state = 'posted'
+
+	def reject_response(self):
+		return self.state = 'wait_validation'
 
 	def __get_invoice_from_move_line(self,id_invoice,inv_name):
 		search_value = self._get_to_pay_move_lines_domain(id_invoice)
@@ -295,6 +298,7 @@ class DirectDebit(models.Model):
 				'r_n_archivo': reg[209:215],
 				'r_observacion': reg[215:],
 				})
+			raise (reg[73:89])
 		return l_reg
 
 class DirectDebitCabecera(models.Model):
