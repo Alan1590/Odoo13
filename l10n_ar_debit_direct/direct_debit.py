@@ -19,14 +19,14 @@ class DirectDebit(models.Model):
 	cabecera_id = fields.Many2one('direct.debit.cabecera')
 	date_debit = fields.Date("Fecha debito",required=True)
 	real_date_debit = fields.Date("Fecha debito cliente",required=True)
-	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total')    
-	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit')  
+	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total', store=True)    
+	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit',store=True)  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
 	response = fields.Text("Respuesta")
 	payments_ids = fields.Many2many("direct.debit.response.result")
 	file = fields.Binary(string="Resultado",readonly=True)
-	journal_id = fields.Many2one(string="Diario", "account.journal",domain=[('|'),('type','=','cash'),('type','=','bank')])
+	journal_id = fields.Many2one("account.journal",string="Diario",domain=[('|'),('type','=','cash'),('type','=','bank')])
 	state = fields.Selection ([
 		('draft','Draft'),
 		('open','Open'),
@@ -35,11 +35,7 @@ class DirectDebit(models.Model):
 		('wait_validation','Wait Validation'),			
 		('posted','Posted'),
 		],default='draft')
-
-	invoice_ids = fields.Many2many("account.move", 
-		domain=[('&'),('state','=','posted'),
-				('type','=','out_invoice'),
-				('invoice_payment_state', '!=', 'paid')])
+	invoice_ids = fields.Many2many("account.move")
 
 	def cancel(self):
 		self.state = "draft"
@@ -47,7 +43,7 @@ class DirectDebit(models.Model):
 	def _compute_amount_total(self):
 		total = 0
 		for item in self:
-			for inv in item.invoice_ids:
+			for inv in self.invoice_ids:
 				total += inv.amount_residual
 			item.amount_total = total
 		return 0
@@ -209,7 +205,7 @@ class DirectDebit(models.Model):
 		self.state = 'posted'
 
 	def reject_response(self):
-		return self.state = 'wait_validation'
+		self.state = 'wait_validation'
 
 	def __get_invoice_from_move_line(self,id_invoice,inv_name):
 		search_value = self._get_to_pay_move_lines_domain(id_invoice)
@@ -298,7 +294,6 @@ class DirectDebit(models.Model):
 				'r_n_archivo': reg[209:215],
 				'r_observacion': reg[215:],
 				})
-			raise (reg[73:89])
 		return l_reg
 
 class DirectDebitCabecera(models.Model):

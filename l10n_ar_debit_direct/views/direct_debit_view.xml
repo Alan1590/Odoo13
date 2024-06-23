@@ -49,10 +49,9 @@
 						<field name="result" attrs="{'readonly': [ ('state', 'not in', ['draft'])]}"/>
 					</page>
 					<page string="Respuesta">
-						<field name="response" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
 						<field name="journal_id" attrs="{'required': [ ('state', 'in', ['wait_validation'])]}" col="12"/>
+						<field name="response" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
 						<field name="payments_ids" attrs="{'readonly': [ ('state', 'in', ['wait_validation'])]}"/>
-
 					</page>
 
 				</notebook>
