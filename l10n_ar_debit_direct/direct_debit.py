@@ -19,12 +19,12 @@ class DirectDebit(models.Model):
 	cabecera_id = fields.Many2one('direct.debit.cabecera')
 	date_debit = fields.Date("Fecha debito",required=True)
 	real_date_debit = fields.Date("Fecha debito cliente",required=True)
-	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total', store=True)    
-	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit',store=True)  
+	amount_total = fields.Float("Total amount debit",readonly=True, compute='_compute_amount_total')    
+	number_debits = fields.Integer("Number of debit",readonly=True, compute='_compute_number_debit')  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
 	response = fields.Text("Respuesta")
-	payments_ids = fields.Many2many("direct.debit.response.result")
+	payments_ids = fields.Many2many("direct.debit.response.result",readonly=True)
 	file = fields.Binary(string="Resultado",readonly=True)
 	journal_id = fields.Many2one("account.journal",string="Diario",domain=[('|'),('type','=','cash'),('type','=','bank')])
 	state = fields.Selection ([
