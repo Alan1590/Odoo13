@@ -198,7 +198,7 @@ class DirectDebit(models.Model):
 		self.state = 'posted'
 
 	def reject_response(self):
-		self.state = 'wait_validation'
+		self.payments_ids = [(5)]
 
 	def __get_invoice_from_move_line(self,id_invoice,inv_name):
 		search_value = self._get_to_pay_move_lines_domain(id_invoice)
@@ -215,8 +215,8 @@ class DirectDebit(models.Model):
 					move_id),
 			('account_id.reconcile', '=', True),
 			('move_id.type', 'in', ['out_invoice']),
-			('reconciled', '=', False),
-			('full_reconcile_id', '=', False),
+#			('reconciled', '=', False),
+#			('full_reconcile_id', '=', False),
 #            ('company_id', '=', 1),
 #            ('company_id', '=', 1),
 			]
@@ -287,6 +287,7 @@ class DirectDebit(models.Model):
 				'r_n_archivo': reg[209:215],
 				'r_observacion': reg[215:],
 				})
+			raise ValidationError(reg[33:44])
 		return l_reg
 
 class DirectDebitCabecera(models.Model):
