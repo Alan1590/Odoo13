@@ -43,12 +43,13 @@ class DirectDebit(models.Model):
 	@api.onchange('invoice_ids')
 	def _get_cost_and_number_debit(self):
 		total_amount = 0
-		self.number_debits = len(self.list_invoices)
+		self.number_debits = len(self.invoice_ids)
 		for item in self.invoice_ids:
 			total_amount += item.amount_residual
 		self.amount_total = total_amount
 
 	def generate_debits_lines(self):
+
 		path = str(pathlib.Path(__file__).parent.absolute())
 		name_file = path+"/debit_files/%s.txt" %self.date_debit
 		f = open(name_file, "w")
@@ -59,7 +60,6 @@ class DirectDebit(models.Model):
 			f.write(self.result)
 			f.close()
 			self.file = base64.b64encode(self.result.encode())
-		self._get_cost_and_number_debit()
 		self.state = 'wait_response'
 
 	def _generate_header(self):
@@ -125,6 +125,7 @@ class DirectDebit(models.Model):
 		invoices_ids = self._get_all_invoices()
 		self.invoice_ids = invoices_ids
 		self.state = 'open'
+		self._get_cost_and_number_debit()
 
 	def _get_all_invoices(self):
 		partner_bank = self.env['res.partner.bank'].search([("is_for_direct_debit","=",True)])
