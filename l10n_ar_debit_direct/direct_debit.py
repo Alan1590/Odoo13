@@ -19,7 +19,7 @@ class DirectDebit(models.Model):
 	cabecera_id = fields.Many2one('direct.debit.cabecera')
 	date_debit = fields.Date("Fecha debito",required=True)
 	real_date_debit = fields.Date("Fecha debito cliente",required=True)
-	amount_total = fields.Float("Total amount debit",readonly=True)    
+	amount_total = fields.Float("Total amount debit",readonly=True, computed)    
 	number_debits = fields.Integer("Number of debit",readonly=True)  
 	#Espacios en blanco 9  
 	result = fields.Text("Resultado", readonly=True)
@@ -59,6 +59,7 @@ class DirectDebit(models.Model):
 			f.write(self.result)
 			f.close()
 			self.file = base64.b64encode(self.result.encode())
+		self._get_cost_and_number_debit()
 		self.state = 'wait_response'
 
 	def _generate_header(self):
@@ -287,7 +288,7 @@ class DirectDebit(models.Model):
 				'r_n_archivo': reg[209:215],
 				'r_observacion': reg[215:],
 				})
-			raise ValidationError(reg[33:44])
+			raise ValidationError(reg[31:44])
 		return l_reg
 
 class DirectDebitCabecera(models.Model):
